@@ -6,6 +6,9 @@ import { useCardTilt } from "./useCardTilt";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import styles from "../styles/NotchedGlassCard.module.css";
 
+/** Fractions of the way to the back face at which side-edge outlines are drawn. */
+const DEPTH_STEPS = [0.15, 0.3, 0.45, 0.6, 0.75, 0.9];
+
 /**
  * Compact clear-acrylic card in the reference's shape (side notches, bottom slot,
  * glowing peach rim + inner bevel line) with dissolved liquid swirling inside.
@@ -18,7 +21,8 @@ export function NotchedGlassCard({ children }: { children: ReactNode }) {
   const [size, setSize] = useState({ w: 0, h: 0 });
   const id = useId().replace(/:/g, "");
   const reducedMotion = usePrefersReducedMotion();
-  const tilt = useCardTilt(ref, !reducedMotion);
+  const shadowRef = useRef<HTMLDivElement>(null);
+  const tilt = useCardTilt(ref, !reducedMotion, shadowRef);
 
   useLayoutEffect(() => {
     const el = ref.current;
@@ -35,7 +39,56 @@ export function NotchedGlassCard({ children }: { children: ReactNode }) {
   const inner = size.w ? notchedPath(size.w, size.h, 6) : "";
 
   return (
+    <div className={styles.float}>
+      {/* Soft ground shadow; scales opposite to the float so the card reads as hovering. */}
+      <div ref={shadowRef} className={styles.shadow} aria-hidden="true" />
     <div ref={ref} className={styles.card}>
+      {/* Soft blurred halo spilling out past the edges. */}
+      {outer && (
+        <svg className={styles.halo} width={size.w} height={size.h} aria-hidden="true">
+          <defs>
+            <filter id={`halo${id}`} x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="9" />
+            </filter>
+          </defs>
+          <path d={outer} fill="none" stroke="rgba(255, 214, 196, 0.5)" strokeWidth="10" filter={`url(#halo${id})`} />
+        </svg>
+      )}
+      {/*
+        Extruded side of the slab: copies of the outline stepped toward the projected
+        back face (--dx/--dy, set per frame by useCardTilt). Together they draw the
+        thick acrylic edge that makes the card read as a 3D block.
+      */}
+      {outer && (
+        <svg className={styles.depth} width={size.w} height={size.h} aria-hidden="true">
+          {/*
+            Mask out the front face: the side is only drawn where it peeks out past
+            the glass. (Anything under the glass would also be what its backdrop blur
+            samples, darkening the galaxy seen through it.)
+          */}
+          <mask id={`side${id}`} maskUnits="userSpaceOnUse" x={-100} y={-100} width={size.w + 200} height={size.h + 200}>
+            <rect x={-100} y={-100} width={size.w + 200} height={size.h + 200} fill="white" />
+            <path d={outer} fill="black" />
+          </mask>
+          <g mask={`url(#side${id})`}>
+          <path
+            d={outer}
+            className={styles.backFace}
+            style={{ transform: "translate(calc(var(--dx, 0) * 1px), calc(var(--dy, 0) * 1px))" }}
+          />
+          {DEPTH_STEPS.map((f) => (
+            <path
+              key={f}
+              d={outer}
+              fill="none"
+              stroke={`rgba(255, 222, 208, ${(0.2 * (1 - f) + 0.05).toFixed(3)})`}
+              strokeWidth="1.2"
+              style={{ transform: `translate(calc(var(--dx, 0) * ${f}px), calc(var(--dy, 0) * ${f}px))` }}
+            />
+          ))}
+          </g>
+        </svg>
+      )}
       {/* Glass body, clipped to the notched outline. */}
       <div className={styles.glass} style={outer ? { clipPath: `path('${outer}')` } : undefined} />
       {/* Dissolved-liquid glass effect, clipped to the inner bevel so it sits within the slab. */}
@@ -57,14 +110,29 @@ export function NotchedGlassCard({ children }: { children: ReactNode }) {
               <stop offset="0.6" stopColor="#d7defc" stopOpacity="0.25" />
               <stop offset="1" stopColor="#ffd8c8" stopOpacity="0.9" />
             </linearGradient>
+            <filter id={`soft${id}`} x="-10%" y="-10%" width="120%" height="120%">
+              <feGaussianBlur stdDeviation="6" />
+            </filter>
             <filter id={`glow${id}`} x="-10%" y="-10%" width="120%" height="120%">
-              <feGaussianBlur stdDeviation="2.2" result="b" />
+              <feGaussianBlur stdDeviation="3" result="b" />
               <feMerge>
                 <feMergeNode in="b" />
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
+          {/* Frosted inner edge: wide blurred stroke clipped inside the outline. */}
+          <clipPath id={`clip${id}`}>
+            <path d={outer} />
+          </clipPath>
+          <path
+            d={outer}
+            fill="none"
+            stroke="rgba(236, 232, 255, 0.28)"
+            strokeWidth="18"
+            filter={`url(#soft${id})`}
+            clipPath={`url(#clip${id})`}
+          />
           <path d={outer} fill="none" stroke={`url(#rim${id})`} strokeWidth="1.4" filter={`url(#glow${id})`} />
           {/* Inner bevel line — the thickness of the acrylic slab. */}
           <path d={inner} fill="none" stroke="rgba(255, 228, 218, 0.22)" strokeWidth="1" />
@@ -78,6 +146,7 @@ export function NotchedGlassCard({ children }: { children: ReactNode }) {
         </div>
         {children}
       </div>
+    </div>
     </div>
   );
 }

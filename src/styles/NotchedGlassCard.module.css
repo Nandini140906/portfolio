@@ -1,3 +1,37 @@
+.float {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+/* Blurred ellipse on the "ground" below the floating card. */
+.shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -46px;
+  width: 78%;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+  filter: blur(6px);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.halo,
+.depth {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.backFace {
+  fill: rgba(200, 196, 230, 0.16);
+  stroke: rgba(255, 222, 208, 0.18);
+  stroke-width: 1;
+}
+
 .card {
   position: relative;
   display: inline-block;

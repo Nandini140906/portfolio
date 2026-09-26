@@ -1,25 +1,31 @@
-import { useIsMobile } from "./hooks/useIsMobile";
-import { usePrefersReducedMotion } from "./hooks/usePrefersReducedMotion";
+import { Leva } from "leva";
+import { BackgroundCanvas } from "./three/BackgroundCanvas";
+import { BgSwitcher } from "./three/BgSwitcher";
+import styles from "./styles/App.module.css";
 
-// Phase 0 placeholder shell — replaced by the canvas + sections in later phases.
+// Phase 1: background system + temporary scroll-test content.
+// Real sections replace the placeholder <main> in Phase 2.
 export default function App() {
-  const isMobile = useIsMobile();
-  const reducedMotion = usePrefersReducedMotion();
-
   return (
-    <main style={{ minHeight: "100vh", display: "grid", placeItems: "center", padding: "2rem" }}>
-      <div style={{ textAlign: "center" }}>
-        <p style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.2em", color: "var(--dimmer)", textTransform: "uppercase" }}>
-          {"// 00 — scaffold"}
-        </p>
-        <h1 style={{ fontSize: "clamp(3rem, 8vw, 6rem)" }}>
-          Nand<em className="accent">i</em>ni Das
-        </h1>
-        <p style={{ color: "var(--dim)" }}>Developer &amp; automation builder</p>
-        <p style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--dimmer)" }}>
-          mobile: {String(isMobile)} · reduced-motion: {String(reducedMotion)}
-        </p>
-      </div>
-    </main>
+    <>
+      <Leva hidden={!import.meta.env.DEV} collapsed />
+      <BackgroundCanvas />
+      <BgSwitcher />
+      <main className={styles.content}>
+        <section className={styles.block}>
+          <p className={styles.label}>{"// 01 — background test"}</p>
+          <h1 className={styles.title}>
+            Nand<em className="accent">i</em>ni Das
+          </h1>
+          <p className={styles.dim}>Move the mouse for parallax · scroll for drift</p>
+        </section>
+        <section className={styles.block}>
+          <p className={styles.label}>{"// scroll 50%"}</p>
+        </section>
+        <section className={styles.block}>
+          <p className={styles.label}>{"// scroll 100%"}</p>
+        </section>
+      </main>
+    </>
   );
 }

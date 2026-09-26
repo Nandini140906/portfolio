@@ -1,0 +1,28 @@
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+.block {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  padding: 2rem 16px;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+}
+
+.title {
+  font-size: clamp(3rem, 9vw, 6.5rem);
+}
+
+.dim {
+  color: var(--dim);
+}

@@ -5,27 +5,11 @@
 
 .block {
   min-height: 100vh;
+  min-height: 100svh;
   display: grid;
-  place-content: center;
+  place-items: center;
   text-align: center;
   padding: 2rem 16px;
-}
-
-/* Mobile: card sits in the top half, hero text below it. */
-@media (max-width: 899px) {
-  .block:first-child {
-    place-content: end center;
-    padding-bottom: 14vh;
-  }
-}
-
-/* Desktop: text in the left column, the 3D card owns the right. */
-@media (min-width: 900px) {
-  .block {
-    place-content: center start;
-    text-align: left;
-    padding-left: 8vw;
-  }
 }
 
 .label {
@@ -37,9 +21,12 @@
 }
 
 .title {
-  font-size: clamp(3rem, 7vw, 6rem);
+  font-size: clamp(2.6rem, 8vw, 5.75rem);
+  text-shadow: 0 2px 30px rgba(7, 7, 12, 0.5);
 }
 
-.dim {
+.tagline {
+  margin: 1rem 0 0;
+  font-size: clamp(1rem, 2vw, 1.2rem);
   color: var(--dim);
 }

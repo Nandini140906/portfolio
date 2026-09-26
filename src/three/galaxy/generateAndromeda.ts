@@ -1,5 +1,11 @@
 import * as THREE from "three";
-import type { GalaxyBuffers } from "./generateGalaxy";
+
+export interface GalaxyBuffers {
+  positions: Float32Array;
+  colors: Float32Array;
+  scales: Float32Array;
+  seeds: Float32Array;
+}
 
 export interface AndromedaParams {
   count: number;
@@ -8,6 +14,10 @@ export interface AndromedaParams {
   winding: number;
   /** Arm thickness as a fraction of radius. Small → crisp, well-defined arms. */
   armWidth: number;
+  /** 0–1: how much loose dust is scattered between/beyond the arms (the "noise"). */
+  dust: number;
+  /** 0–1: how many larger warm glints are sprinkled through the disc. */
+  sparkle: number;
   coreColor: string;
   diskColor: string;
   sparkleColor: string;
@@ -26,19 +36,30 @@ function mulberry32(seed: number) {
 }
 
 /**
- * Andromeda-style galaxy, modelled as five populations (fractions of `count`):
- *   bulge   10%  — dense peach gaussian core
- *   inner   22%  — faint diffuse peach→lavender disc inside the arms
- *   arms    50%  — two tightly-wound log-spiral arms; at high inclination their
- *                  ~1.5 turns read as the elliptical rings of the reference
- *   dust    17.6% — fine dim glitter across the whole disc and just beyond
- *   sparkle 0.4% — a sprinkling of larger warm glints
- * Disc lies in the XZ plane (normal +Y).
+ * Andromeda-style galaxy built from five populations:
+ *   bulge   — dense peach gaussian core
+ *   inner   — faint diffuse peach→lavender disc inside the arms
+ *   arms    — two tightly-wound log-spiral arms; at high inclination their
+ *             ~1.5 turns read as the elliptical rings of the reference image
+ *   dust    — fine dim glitter across the disc (scaled by `dust`)
+ *   sparkle — a sprinkling of larger warm glints (scaled by `sparkle`)
+ * The disc lies in the XZ plane (normal +Y).
  */
 export function generateAndromeda(p: AndromedaParams): GalaxyBuffers {
   const rand = mulberry32(p.seed);
   // Box–Muller standard normal.
   const gauss = () => Math.sqrt(-2 * Math.log(rand() + 1e-9)) * Math.cos(2 * Math.PI * rand());
+
+  // Population weights → cumulative thresholds. Arms absorb whatever dust/sparkle don't use.
+  const wBulge = 0.1;
+  const wInner = 0.18;
+  const wDust = 0.18 * p.dust;
+  const wSparkle = 0.006 * p.sparkle;
+  const wArms = 1 - wBulge - wInner - wDust - wSparkle;
+  const tBulge = wBulge;
+  const tInner = tBulge + wInner;
+  const tArms = tInner + wArms;
+  const tDust = tArms + wDust;
 
   const n = p.count;
   const positions = new Float32Array(n * 3);
@@ -56,22 +77,20 @@ export function generateAndromeda(p: AndromedaParams): GalaxyBuffers {
 
   for (let i = 0; i < n; i++) {
     const u = rand();
-    let x = 0;
-    let y = 0;
-    let z = 0;
+    let x: number;
+    let y: number;
+    let z: number;
     let scale = 0.5 + rand() * 0.5;
-    let brightness = 1;
+    let brightness: number;
 
-    if (u < 0.1) {
-      // Bulge.
+    if (u < tBulge) {
       x = gauss() * 0.11 * R;
       z = gauss() * 0.11 * R;
       y = gauss() * 0.05 * R;
       c.copy(core).lerp(white, rand() * 0.25);
       brightness = 0.55;
       scale *= 0.8;
-    } else if (u < 0.32) {
-      // Inner diffuse disc.
+    } else if (u < tInner) {
       const r = (0.12 + Math.pow(rand(), 0.7) * 0.5) * R;
       const a = rand() * Math.PI * 2;
       x = Math.cos(a) * r;
@@ -79,9 +98,9 @@ export function generateAndromeda(p: AndromedaParams): GalaxyBuffers {
       y = gauss() * 0.02 * R;
       c.copy(core).lerp(disk, (r / R) * 1.4);
       brightness = 0.4;
-    } else if (u < 0.82) {
-      // Spiral arms. Log spiral θ = arm·π + winding·ln(r/r0): constant pitch,
-      // so the arms stay evenly spaced as they wrap into ring-like bands.
+    } else if (u < tArms) {
+      // Log spiral θ = arm·π + winding·ln(r/r0): constant pitch, so the arms stay
+      // evenly spaced as they wrap into ring-like bands.
       const arm = rand() < 0.5 ? 0 : 1;
       const r = r0 + Math.pow(rand(), 0.85) * (R - r0);
       const theta = arm * Math.PI + p.winding * Math.log(r / r0);
@@ -89,30 +108,26 @@ export function generateAndromeda(p: AndromedaParams): GalaxyBuffers {
       const w = p.armWidth * R * (0.6 + 0.8 * (r / R));
       const along = gauss() * w * 1.5;
       const across = gauss() * w;
-      const tx = -Math.sin(theta);
-      const tz = Math.cos(theta);
-      x = Math.cos(theta) * r + tx * along + Math.cos(theta) * across;
-      z = Math.sin(theta) * r + tz * along + Math.sin(theta) * across;
+      x = Math.cos(theta) * (r + across) - Math.sin(theta) * along;
+      z = Math.sin(theta) * (r + across) + Math.cos(theta) * along;
       y = gauss() * 0.012 * R;
       c.copy(disk).lerp(white, rand() * 0.55);
-      // Wide brightness spread is what makes the arms read as glitter, not a solid band.
+      // Wide brightness spread makes the arms read as glitter, not a solid band.
       brightness = 0.25 + Math.pow(rand(), 2) * 0.6;
       if (rand() < 0.05) {
         scale = 1.1 + rand() * 0.6;
         brightness = 1;
       }
-    } else if (u < 0.996) {
-      // Fine dust over the whole disc, thinning past the arms.
-      const r = Math.pow(rand(), 0.6) * 1.25 * R;
+    } else if (u < tDust) {
+      const r = Math.pow(rand(), 0.6) * 1.2 * R;
       const a = rand() * Math.PI * 2;
       x = Math.cos(a) * r;
       z = Math.sin(a) * r;
       y = gauss() * 0.03 * R;
       c.copy(disk).lerp(white, rand() * 0.4);
-      brightness = 0.3 + rand() * 0.3;
+      brightness = 0.25 + rand() * 0.25;
       scale *= 0.75;
     } else {
-      // Warm sparkles scattered through the disc.
       const r = Math.sqrt(rand()) * 1.05 * R;
       const a = rand() * Math.PI * 2;
       x = Math.cos(a) * r;

@@ -1,15 +1,12 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { generateGalaxy, type GalaxyBuffers, type GalaxyParams } from "./galaxy/generateGalaxy";
+import type { GalaxyBuffers } from "./galaxy/generateAndromeda";
 import { galaxyFragmentShader, galaxyVertexShader } from "./galaxy/galaxyShader";
 import { scroll } from "./motionStore";
 
 export interface GalaxyParticlesProps {
-  /** Either spiral params for the default generator… */
-  params?: GalaxyParams;
-  /** …or pre-generated buffers from a custom generator (e.g. generateAndromeda). */
-  buffers?: GalaxyBuffers;
+  buffers: GalaxyBuffers;
   /** 0 = soft glowing blobs, 1 = crisp pin-point glitter. */
   sharpness?: number;
   /** Base point size before perspective attenuation. */
@@ -28,7 +25,6 @@ export interface GalaxyParticlesProps {
 }
 
 export function GalaxyParticles({
-  params,
   buffers,
   sharpness = 0,
   size = 28,
@@ -45,15 +41,14 @@ export function GalaxyParticles({
   const dpr = useThree((s) => s.viewport.dpr);
 
   const geometry = useMemo(() => {
-    const b = buffers ?? generateGalaxy(params!);
+    const b = buffers;
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.BufferAttribute(b.positions, 3));
     g.setAttribute("color", new THREE.BufferAttribute(b.colors, 3));
     g.setAttribute("aScale", new THREE.BufferAttribute(b.scales, 1));
     g.setAttribute("aSeed", new THREE.BufferAttribute(b.seeds, 1));
     return g;
-    // Params object identity changes every render; key the memo by value instead.
-  }, [buffers, JSON.stringify(params)]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [buffers]);
 
   const material = useMemo(
     () =>

@@ -1,23 +1,24 @@
 import { Leva } from "leva";
 import { BackgroundCanvas } from "./three/BackgroundCanvas";
-import { BgSwitcher } from "./three/BgSwitcher";
+import { GlassNameCard } from "./sections/GlassNameCard";
+import { site } from "./data/content";
 import styles from "./styles/App.module.css";
 
-// Phase 1: background system + temporary scroll-test content.
-// Real sections replace the placeholder <main> in Phase 2.
+// Phase 1: background + hero glass card, plus temporary scroll-test blocks.
+// Real sections replace the placeholder blocks in Phase 2.
 export default function App() {
   return (
     <>
       <Leva hidden={!import.meta.env.DEV} collapsed />
       <BackgroundCanvas />
-      <BgSwitcher />
       <main className={styles.content}>
         <section className={styles.block}>
-          <p className={styles.label}>{"// 01 — background test"}</p>
-          <h1 className={styles.title}>
-            Nand<em className="accent">i</em>ni Das
-          </h1>
-          <p className={styles.dim}>Move the mouse for parallax · scroll for drift</p>
+          <GlassNameCard>
+            <h1 className={styles.title}>
+              Nand<em className="accent">i</em>ni Das
+            </h1>
+            <p className={styles.tagline}>{site.tagline}</p>
+          </GlassNameCard>
         </section>
         <section className={styles.block}>
           <p className={styles.label}>{"// scroll 50%"}</p>

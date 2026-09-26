@@ -1,0 +1,95 @@
+.card {
+  position: relative;
+  width: min(760px, 100%);
+  padding: clamp(64px, 9vw, 96px) clamp(24px, 6vw, 72px);
+  border-radius: 26px;
+  /* Clear glass: faint diagonal sheen, light blur so the galaxy stays visible
+     through it but softened enough for the name to read. */
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.015) 38%, rgba(255, 255, 255, 0.015) 62%, rgba(255, 255, 255, 0.06)),
+    rgba(10, 12, 22, 0.34);
+  -webkit-backdrop-filter: blur(7px) saturate(135%);
+  backdrop-filter: blur(7px) saturate(135%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),   /* top edge highlight */
+    inset 0 0 28px rgba(255, 214, 200, 0.07),  /* inner edge luminance */
+    0 0 48px rgba(255, 190, 160, 0.12),        /* soft peach halo */
+    0 40px 90px rgba(0, 0, 0, 0.45);
+  text-align: center;
+}
+
+/* Glowing peach→lavender rim (gradient border via mask, so it can fade around the edge). */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.2px;
+  background: linear-gradient(
+    150deg,
+    rgba(255, 226, 214, 0.85),
+    rgba(255, 200, 180, 0.25) 30%,
+    rgba(200, 210, 255, 0.12) 55%,
+    rgba(255, 210, 195, 0.7)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+.body {
+  position: relative;
+}
+
+/* Chip (top-left) with contact lines. */
+.chip {
+  position: absolute;
+  top: clamp(18px, 2.6vw, 28px);
+  left: clamp(18px, 2.6vw, 30px);
+  width: 42px;
+  height: 32px;
+  border-radius: 7px;
+  border: 1px solid rgba(240, 238, 255, 0.4);
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 7px, rgba(240, 238, 255, 0.28) 7px 8px),
+    rgba(230, 228, 245, 0.12);
+}
+
+.meta {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(236, 232, 255, 0.62);
+  white-space: nowrap;
+}
+
+.topRight {
+  top: clamp(22px, 2.8vw, 32px);
+  right: clamp(18px, 2.6vw, 30px);
+  font-weight: 700;
+}
+
+.bottomLeft {
+  bottom: clamp(18px, 2.6vw, 28px);
+  left: clamp(18px, 2.6vw, 30px);
+}
+
+.bottomRight {
+  bottom: clamp(18px, 2.6vw, 28px);
+  right: clamp(18px, 2.6vw, 30px);
+  color: rgba(236, 232, 255, 0.4);
+}
+
+@media (max-width: 480px) {
+  .meta {
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+  }
+  .chip {
+    width: 34px;
+    height: 26px;
+  }
+}

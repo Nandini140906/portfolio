@@ -1,9 +1,9 @@
 import { useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { notchedPath } from "./notchedPath";
-import { site } from "../data/content";
 import { LiquidLayer } from "./liquid/LiquidLayer";
 import { useCardTilt } from "./useCardTilt";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import { useIntroCovering } from "../intro/introStore";
 import styles from "../styles/NotchedGlassCard.module.css";
 
 /** Fractions of the way to the back face at which side-edge outlines are drawn. */
@@ -21,6 +21,7 @@ export function NotchedGlassCard({ children }: { children: ReactNode }) {
   const [size, setSize] = useState({ w: 0, h: 0 });
   const id = useId().replace(/:/g, "");
   const reducedMotion = usePrefersReducedMotion();
+  const introCovering = useIntroCovering(); // hidden under the intro → don't animate
   const shadowRef = useRef<HTMLDivElement>(null);
   const tilt = useCardTilt(ref, !reducedMotion, shadowRef);
 
@@ -95,7 +96,7 @@ export function NotchedGlassCard({ children }: { children: ReactNode }) {
       {inner && (
         <LiquidLayer
           tilt={tilt}
-          animate={!reducedMotion}
+          animate={!reducedMotion && !introCovering}
           className={styles.liquid}
           style={{ clipPath: `path('${inner}')` }}
         />
@@ -142,7 +143,6 @@ export function NotchedGlassCard({ children }: { children: ReactNode }) {
       <div className={styles.content}>
         <div className={styles.topRow} aria-hidden="true">
           <span className={styles.chip} />
-          <span className={styles.meta}>{site.cardLabel}</span>
         </div>
         {children}
       </div>

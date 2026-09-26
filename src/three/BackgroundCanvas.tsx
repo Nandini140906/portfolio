@@ -7,12 +7,17 @@ import { attachMotionListeners } from "./motionStore";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { usePageVisible } from "../hooks/usePageVisible";
+import { useIntroCovering } from "../intro/introStore";
 import styles from "../styles/BackgroundCanvas.module.css";
 
 export function BackgroundCanvas() {
   const isMobile = useIsMobile();
   const reducedMotion = usePrefersReducedMotion();
-  const visible = usePageVisible();
+  // Nothing to draw for while the tab is hidden or the intro covers the screen.
+  // (Both hooks always called — never short-circuit a hook call.)
+  const pageVisible = usePageVisible();
+  const introCovering = useIntroCovering();
+  const visible = pageVisible && !introCovering;
   const animate = !reducedMotion;
 
   useEffect(attachMotionListeners, []);
@@ -31,7 +36,7 @@ export function BackgroundCanvas() {
     <div className={styles.wrap} aria-hidden="true">
       <Canvas
         dpr={isMobile ? [1, 1.5] : [1, 2]}
-        // Hidden tab → stop rendering entirely. Reduced motion → only render on
+        // Hidden (tab/intro) → stop rendering entirely. Reduced motion → only render on
         // demand (i.e. one static composed frame, re-rendered on resize/prop change).
         frameloop={!visible ? "never" : animate ? "always" : "demand"}
         camera={{ fov: 45, near: 0.1, far: 200, position: [0, 0, 8.5] }}

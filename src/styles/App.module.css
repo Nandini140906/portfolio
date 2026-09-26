@@ -1,6 +1,23 @@
 .content {
   position: relative;
   z-index: 1;
+  /* Simple fade-in on load (the only entrance under reduced motion).
+     Fill "backwards", not "both": an opacity animation still in effect after it
+     ends makes <main> a backdrop root, which blinds the glass card's blur. */
+  animation: contentIn 0.9s ease backwards;
+}
+
+@keyframes contentIn {
+  from {
+    opacity: 0;
+  }
+}
+
+.introCover {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--bg);
 }
 
 .block {

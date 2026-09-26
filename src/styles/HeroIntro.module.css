@@ -1,0 +1,90 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Lines sit stacked in the same spot and crossfade. */
+.lines {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16vh;
+  z-index: 0;
+  display: grid;
+  pointer-events: none;
+}
+
+/* Soft dark pool behind the type so it stays readable over the bright network. */
+.lines::before {
+  content: "";
+  position: absolute;
+  inset: -40% 5%;
+  background: radial-gradient(closest-side, rgba(7, 7, 12, 0.75), rgba(7, 7, 12, 0));
+  z-index: -1;
+}
+
+.line {
+  grid-area: 1 / 1;
+  text-align: center;
+  visibility: hidden;
+}
+
+.text,
+.reflection {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 4.6vw, 3.4rem);
+  line-height: 1.1;
+  color: var(--white);
+  letter-spacing: -0.01em;
+}
+
+.text {
+  text-shadow: 0 0 28px rgba(255, 201, 138, 0.25);
+}
+
+/* Ghosted reflection: flipped copy that fades out downward. */
+.reflection {
+  transform: scaleY(-1) translateY(-0.12em);
+  opacity: 0.16;
+  filter: blur(1.5px);
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 70%);
+  mask-image: linear-gradient(to top, #000 0%, transparent 70%);
+}
+
+.skip {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(13, 13, 22, 0.5);
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.skip:hover {
+  color: var(--white);
+  border-color: rgba(255, 201, 138, 0.4);
+}
+
+.skip:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 2px;
+}

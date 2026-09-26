@@ -80,7 +80,7 @@
 .topRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 2rem;
   margin-bottom: 10px;
 }
@@ -95,11 +95,3 @@
     rgba(230, 228, 245, 0.12);
 }
 
-.meta {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(236, 232, 255, 0.6);
-}

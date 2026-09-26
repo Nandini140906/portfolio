@@ -1,50 +1,49 @@
-import { GalaxyParticles } from "../GalaxyParticles";
-import { GlassCard } from "../GlassCard";
+import { HeroCard } from "../card/HeroCard";
 import { CameraRig } from "../CameraRig";
-import { StarDust } from "../StarDust";
+import { Backdrop } from "../Backdrop";
 import { useGalaxyControls } from "../useGalaxyControls";
 import { capCount, type VariantProps } from "./types";
 
+/** Card position shared with Effects so depth of field focuses on it. */
+export const cardAnchor = (isMobile: boolean): [number, number, number] => (isMobile ? [0, 0.75, 0] : [1.55, 0, 0]);
+
 /**
- * A — literal recreation of the reference: frosted glass card front-and-centre
- * with the galaxy sitting inside its footprint, the card acting as a window.
+ * A — recreation of the reference image: a notched clear-acrylic card with a
+ * glowing rim, an inclined Andromeda-like galaxy inside, warm bokeh around it,
+ * on a slate studio backdrop with shallow depth of field.
  */
 export function VariantA({ isMobile, animate }: VariantProps) {
   const { params, look } = useGalaxyControls(
     "Galaxy A",
     {
-      count: 60000,
-      radius: 1.45,
-      branches: 3,
-      spin: 2.6,
-      randomness: 0.32,
-      randomnessPower: 2.6,
-      coreFraction: 0.18,
-      coreColor: "#ffc98a",
-      armColor: "#93b8ff",
+      count: 90000,
+      radius: 0.95,
+      branches: 5,
+      spin: 7.5,
+      randomness: 0.5,
+      randomnessPower: 1.8,
+      coreFraction: 0.14,
+      coreColor: "#ffc4a8",
+      armColor: "#c3d3ff",
       seed: 42,
+      brightFraction: 0,
+      colorFalloff: 1.1,
     },
-    { size: 16, intensity: 1.1, twinkle: 0.35, rotationSpeed: 0.05 },
+    { size: 15, intensity: 0.75, twinkle: 0.25, rotationSpeed: 0.04 },
   );
-
-  // Card shrinks on narrow portrait screens so it stays in frame.
-  const card: [number, number, number] = isMobile ? [2.5, 3.4, 0.28] : [4.6, 3.0, 0.32];
 
   return (
     <>
-      <CameraRig base={[0, 0.1, isMobile ? 8 : 6]} parallax={0.4} scrollDolly={1} animate={animate} />
-      <StarDust count={isMobile ? 1500 : 5000} animate={animate} />
-      {/* Galaxy tilted ~60° toward camera and centred just behind the card's mid-plane. */}
-      <GalaxyParticles
-        // On mobile the galaxy shrinks with the (narrower) card so it stays inside the window.
-        params={{ ...params, count: capCount(params.count, isMobile), radius: isMobile ? params.radius * 0.8 : params.radius }}
-        {...look}
+      <CameraRig base={[0, 0.25, isMobile ? 9.2 : 7.5]} lookAt={[0, 0.1, 0]} parallax={0.25} scrollDolly={0.8} animate={animate} fov={35} />
+      <Backdrop />
+      <HeroCard
+        galaxy={{ ...params, count: capCount(params.count, isMobile) }}
+        look={look}
+        position={cardAnchor(isMobile)}
         animate={animate}
-        position={[0, 0, -0.6]}
-        tilt={[0.95, 0, -0.3]}
-        scrollSpin={1.2}
+        scale={isMobile ? 0.62 : 1.15}
+        isMobile={isMobile}
       />
-      <GlassCard size={card} animate={animate} isMobile={isMobile} />
     </>
   );
 }

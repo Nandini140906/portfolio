@@ -15,6 +15,10 @@ export interface GalaxyParams {
   coreColor: string;
   armColor: string;
   seed: number;
+  /** Fraction of particles drawn as larger, brighter "stars" (0 = perfectly smooth dust). */
+  brightFraction?: number;
+  /** Exponent for the core→arm colour ramp; higher keeps the warm core colour further out. */
+  colorFalloff?: number;
 }
 
 export interface GalaxyBuffers {
@@ -85,14 +89,14 @@ export function generateGalaxy(p: GalaxyParams): GalaxyBuffers {
 
     // Gold core → blue-white arms. pow < 1 makes the gold fall off quickly
     // so most of the disc reads blue, with a hot centre.
-    const t = Math.min(1, Math.pow(r / p.radius, 0.55));
+    const t = Math.min(1, Math.pow(r / p.radius, p.colorFalloff ?? 0.55));
     tmp.copy(core).lerp(arm, t);
     colors[i3] = tmp.r;
     colors[i3 + 1] = tmp.g;
     colors[i3 + 2] = tmp.b;
 
-    // Most particles small, ~3% noticeably bright "stars".
-    scales[i] = rand() < 0.03 ? 1.6 + rand() * 1.4 : 0.35 + rand() * 0.9;
+    // Most particles small; a few (brightFraction) noticeably bright "stars".
+    scales[i] = rand() < (p.brightFraction ?? 0.03) ? 1.6 + rand() * 1.4 : 0.35 + rand() * 0.9;
     seeds[i] = rand();
   }
 

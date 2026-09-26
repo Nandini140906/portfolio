@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { pointer, scroll } from "./motionStore";
@@ -10,6 +11,7 @@ export interface CameraRigProps {
   /** World units the camera dollies forward across full page scroll. */
   scrollDolly?: number;
   animate?: boolean;
+  fov?: number;
 }
 
 const target = new THREE.Vector3();
@@ -21,8 +23,16 @@ export function CameraRig({
   parallax = 0.35,
   scrollDolly = 1.2,
   animate = true,
+  fov = 45,
 }: CameraRigProps) {
   const camera = useThree((s) => s.camera);
+
+  useEffect(() => {
+    if (camera instanceof THREE.PerspectiveCamera && camera.fov !== fov) {
+      camera.fov = fov;
+      camera.updateProjectionMatrix();
+    }
+  }, [camera, fov]);
 
   useFrame((_, delta) => {
     const px = animate ? pointer.x : 0;

@@ -3,7 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Effects } from "./Effects";
 import { GlassLighting } from "./GlassLighting";
-import { VariantA } from "./variants/VariantA";
+import { VariantA, cardAnchor } from "./variants/VariantA";
 import { VariantB } from "./variants/VariantB";
 import { VariantC } from "./variants/VariantC";
 import { attachMotionListeners } from "./motionStore";
@@ -43,6 +43,11 @@ export function BackgroundCanvas() {
     radius: { value: 0.72, min: 0, max: 1, step: 0.01 },
   }, { collapsed: true });
 
+  const dof = useControls("Depth of field", {
+    focusRange: { value: 2.2, min: 0.2, max: 6, step: 0.05 },
+    bokehScale: { value: 4, min: 0, max: 12, step: 0.1 },
+  }, { collapsed: true });
+
   const Scene = VARIANTS[variant];
 
   return (
@@ -59,7 +64,9 @@ export function BackgroundCanvas() {
         <Suspense fallback={null}>
           <GlassLighting />
           <Scene key={variant} isMobile={isMobile} animate={animate} />
-          {!isMobile && !reducedMotion && <Effects {...bloom} />}
+          {!isMobile && !reducedMotion && (
+            <Effects {...bloom} {...dof} focusTarget={variant === "a" ? cardAnchor(false) : undefined} />
+          )}
         </Suspense>
       </Canvas>
     </div>

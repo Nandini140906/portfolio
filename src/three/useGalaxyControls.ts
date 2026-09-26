@@ -28,6 +28,8 @@ export function useGalaxyControls(
         coreColor: params.coreColor,
         armColor: params.armColor,
         seed: { value: params.seed, min: 1, max: 999, step: 1 },
+        brightFraction: { value: params.brightFraction ?? 0.03, min: 0, max: 0.2, step: 0.005 },
+        colorFalloff: { value: params.colorFalloff ?? 0.55, min: 0.2, max: 2, step: 0.05 },
       }),
       look: folder({
         size: { value: look.size, min: 2, max: 120, step: 1 },

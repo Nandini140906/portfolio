@@ -20,6 +20,8 @@ export interface SpiralParams {
   brightFraction?: number;
   /** Exponent for the core→arm colour ramp; higher keeps the warm core colour further out. */
   colorFalloff?: number;
+  /** Fraction of the radius left empty in the centre (0 = normal galaxy). */
+  innerHole?: number;
 }
 
 
@@ -67,7 +69,8 @@ export function generateSpiral(p: SpiralParams): GalaxyBuffers {
       r = Math.hypot(x, z);
     } else {
       // Radius biased toward the centre (pow > 1 → denser core, sparse rim).
-      r = Math.pow(rand(), 1.5) * p.radius;
+      const hole = (p.innerHole ?? 0) * p.radius;
+      r = hole + Math.pow(rand(), 1.5) * (p.radius - hole);
       const branchAngle = ((i % p.branches) / p.branches) * Math.PI * 2;
       // Logarithmic spiral: angle grows with ln(r), so arms keep a constant pitch
       // angle as they widen — the look of real spiral galaxies.

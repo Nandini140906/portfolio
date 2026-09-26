@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useControls } from "leva";
 import { CameraRig } from "./CameraRig";
 import { Backdrop } from "./Backdrop";
+import { SpiralBackdrop } from "./SpiralBackdrop";
 import { CoreGlow } from "./CoreGlow";
 import { GalaxyParticles } from "./GalaxyParticles";
 import { generateAndromeda } from "./galaxy/generateAndromeda";
@@ -13,8 +14,9 @@ export interface GalaxySceneProps {
 }
 
 /**
- * The reference galaxy: a compact, inclined Andromeda-like disc — glowing peach
- * core, glittery silver-blue ring arms, warm sparkles — on a slate backdrop.
+ * Hero scene: the reference galaxy (compact, inclined Andromeda-like disc — glowing
+ * peach core, glittery silver-blue ring arms, warm sparkles) in front of the big,
+ * dim "B" spiral as a far background layer.
  * Deliberately contained (no dust spraying across the page). Tunable via the
  * "Galaxy" leva panel in dev.
  */
@@ -78,7 +80,8 @@ export function GalaxyScene({ isMobile, animate }: GalaxySceneProps) {
         animate={animate}
         fov={22}
       />
-      <Backdrop position={[0, 0, -20]} size={120} />
+      <Backdrop position={[0, 0, -110]} size={500} />
+      <SpiralBackdrop isMobile={isMobile} animate={animate} />
       <group position={[0, isMobile ? 1.6 : v.offsetY, 0]}>
         {/*
           Roll (z) lays the ellipse diagonally on screen; inclination (x) tips the XZ

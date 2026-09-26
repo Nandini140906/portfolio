@@ -1,6 +1,5 @@
 import { Leva } from "leva";
 import { BackgroundCanvas } from "./three/BackgroundCanvas";
-import { BgSwitcher } from "./three/BgSwitcher";
 import { NotchedGlassCard } from "./sections/NotchedGlassCard";
 import { site } from "./data/content";
 import styles from "./styles/App.module.css";
@@ -12,7 +11,6 @@ export default function App() {
     <>
       <Leva hidden={!import.meta.env.DEV} collapsed />
       <BackgroundCanvas />
-      <BgSwitcher />
       <main className={styles.content}>
         <section className={`${styles.block} ${styles.hero}`}>
           <NotchedGlassCard>

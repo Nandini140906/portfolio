@@ -38,6 +38,11 @@ function mulberry32(seed: number) {
 }
 
 /** Classic parametric spiral (the original "B" look): log-spiral arms, gold core → blue arms. */
+function smoothstep(e0: number, e1: number, x: number): number {
+  const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
+  return t * t * (3 - 2 * t);
+}
+
 export function generateSpiral(p: SpiralParams): GalaxyBuffers {
   const rand = mulberry32(p.seed);
   const positions = new Float32Array(p.count * 3);
@@ -69,8 +74,7 @@ export function generateSpiral(p: SpiralParams): GalaxyBuffers {
       r = Math.hypot(x, z);
     } else {
       // Radius biased toward the centre (pow > 1 → denser core, sparse rim).
-      const hole = (p.innerHole ?? 0) * p.radius;
-      r = hole + Math.pow(rand(), 1.5) * (p.radius - hole);
+      r = Math.pow(rand(), 1.5) * p.radius;
       const branchAngle = ((i % p.branches) / p.branches) * Math.PI * 2;
       // Logarithmic spiral: angle grows with ln(r), so arms keep a constant pitch
       // angle as they widen — the look of real spiral galaxies.
@@ -90,9 +94,16 @@ export function generateSpiral(p: SpiralParams): GalaxyBuffers {
     // so most of the disc reads blue, with a hot centre.
     const t = Math.min(1, Math.pow(r / p.radius, p.colorFalloff ?? 0.55));
     tmp.copy(core).lerp(arm, t);
-    colors[i3] = tmp.r;
-    colors[i3 + 1] = tmp.g;
-    colors[i3 + 2] = tmp.b;
+    // Soft brightness fades instead of hard cut-offs: an optional hollow centre
+    // (innerHole) and the outer rim both ramp smoothly, so arms never start or end
+    // as abrupt bright arcs.
+    const hole = (p.innerHole ?? 0) * p.radius;
+    const fadeIn = hole > 0 ? smoothstep(hole * 0.4, hole * 1.8, r) : 1;
+    const fadeOut = 1 - smoothstep(p.radius * 0.7, p.radius * 1.05, r);
+    const fade = fadeIn * fadeOut;
+    colors[i3] = tmp.r * fade;
+    colors[i3 + 1] = tmp.g * fade;
+    colors[i3 + 2] = tmp.b * fade;
 
     // Most particles small; a few (brightFraction) noticeably bright "stars".
     scales[i] = rand() < (p.brightFraction ?? 0.03) ? 1.6 + rand() * 1.4 : 0.35 + rand() * 0.9;

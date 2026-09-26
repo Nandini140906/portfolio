@@ -12,7 +12,7 @@ export default function App() {
       <Leva hidden={!import.meta.env.DEV} collapsed />
       <BackgroundCanvas />
       <main className={styles.content}>
-        <section className={`${styles.block} ${styles.hero}`}>
+        <section className={styles.block}>
           <NotchedGlassCard>
             <h1 className={styles.title}>
               Nand<em className="accent">i</em>ni Das

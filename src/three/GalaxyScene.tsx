@@ -24,11 +24,11 @@ export function GalaxyScene({ isMobile, animate }: GalaxySceneProps) {
   const v = useControls(
     "Galaxy",
     {
-      count: { value: 65000, min: 10000, max: 200000, step: 5000 },
-      radius: { value: 2.8, min: 0.5, max: 6, step: 0.05 },
+      count: { value: 35000, min: 10000, max: 200000, step: 5000 },
+      radius: { value: 3.1, min: 0.5, max: 6, step: 0.05 },
       winding: { value: 4.6, min: 0.5, max: 8, step: 0.05 },
       armWidth: { value: 0.045, min: 0.005, max: 0.2, step: 0.001 },
-      dust: { value: 0.35, min: 0, max: 1, step: 0.01 },
+      dust: { value: 0.12, min: 0, max: 1, step: 0.01 },
       sparkle: { value: 1.4, min: 0, max: 3, step: 0.05 },
       coreColor: "#ffc4ab",
       diskColor: "#bccfff",
@@ -42,8 +42,8 @@ export function GalaxyScene({ isMobile, animate }: GalaxySceneProps) {
       /** In-screen roll so the ellipse rises to the right, like the reference. */
       roll: { value: 0.3, min: -1.57, max: 1.57, step: 0.01 },
       glow: { value: 0.7, min: 0, max: 2, step: 0.01 },
-      /** Vertical position (world units) — lifts the galaxy above the name card. */
-      offsetY: { value: 0.55, min: -3, max: 3, step: 0.01 },
+      /** Vertical position (world units); 0 = centred behind the name card. */
+      offsetY: { value: 0, min: -3, max: 3, step: 0.01 },
     },
     { collapsed: true },
   );
@@ -82,7 +82,7 @@ export function GalaxyScene({ isMobile, animate }: GalaxySceneProps) {
       />
       <Backdrop position={[0, 0, -110]} size={500} />
       <SpiralBackdrop isMobile={isMobile} animate={animate} />
-      <group position={[0, isMobile ? 1.6 : v.offsetY, 0]}>
+      <group position={[0, v.offsetY, 0]}>
         {/*
           Roll (z) lays the ellipse diagonally on screen; inclination (x) tips the XZ
           disc toward camera — its on-screen minor/major ratio is ≈ sin(inclination).

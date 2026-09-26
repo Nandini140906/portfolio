@@ -1,6 +1,6 @@
 import { Leva } from "leva";
 import { BackgroundCanvas } from "./three/BackgroundCanvas";
-import { GlassNameCard } from "./sections/GlassNameCard";
+import { NotchedGlassCard } from "./sections/NotchedGlassCard";
 import { site } from "./data/content";
 import styles from "./styles/App.module.css";
 
@@ -12,13 +12,13 @@ export default function App() {
       <Leva hidden={!import.meta.env.DEV} collapsed />
       <BackgroundCanvas />
       <main className={styles.content}>
-        <section className={styles.block}>
-          <GlassNameCard>
+        <section className={`${styles.block} ${styles.hero}`}>
+          <NotchedGlassCard>
             <h1 className={styles.title}>
               Nand<em className="accent">i</em>ni Das
             </h1>
             <p className={styles.tagline}>{site.tagline}</p>
-          </GlassNameCard>
+          </NotchedGlassCard>
         </section>
         <section className={styles.block}>
           <p className={styles.label}>{"// scroll 50%"}</p>

@@ -54,7 +54,7 @@ export function generateAndromeda(p: AndromedaParams): GalaxyBuffers {
   const wBulge = 0.1;
   const wInner = 0.18;
   const wDust = 0.18 * p.dust;
-  const wSparkle = 0.006 * p.sparkle;
+  const wSparkle = 0.0015 * p.sparkle;
   const wArms = 1 - wBulge - wInner - wDust - wSparkle;
   const tBulge = wBulge;
   const tInner = tBulge + wInner;
@@ -119,7 +119,8 @@ export function generateAndromeda(p: AndromedaParams): GalaxyBuffers {
         brightness = 1;
       }
     } else if (u < tDust) {
-      const r = Math.pow(rand(), 0.6) * 1.2 * R;
+      // Kept inside the disc (≤1.05R) so nothing sprays out across the page.
+      const r = Math.pow(rand(), 0.6) * 1.05 * R;
       const a = rand() * Math.PI * 2;
       x = Math.cos(a) * r;
       z = Math.sin(a) * r;
@@ -128,14 +129,15 @@ export function generateAndromeda(p: AndromedaParams): GalaxyBuffers {
       brightness = 0.25 + rand() * 0.25;
       scale *= 0.75;
     } else {
-      const r = Math.sqrt(rand()) * 1.05 * R;
+      const r = Math.sqrt(rand()) * 1.1 * R;
       const a = rand() * Math.PI * 2;
       x = Math.cos(a) * r;
       z = Math.sin(a) * r;
       y = gauss() * 0.05 * R;
       c.copy(sparkle).lerp(white, rand() * 0.3);
       brightness = 1.1;
-      scale = rand() < 0.4 ? 2.2 + rand() * 1.4 : 1.2 + rand() * 0.6;
+      // Warm glints of mixed size — the big ones read as bokeh once bloom hits them.
+      scale = rand() < 0.45 ? 2.6 + rand() * 2.2 : 1.3 + rand() * 0.8;
     }
 
     positions[i * 3] = x;

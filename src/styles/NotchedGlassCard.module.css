@@ -1,0 +1,58 @@
+.card {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  padding: 22px clamp(28px, 4vw, 44px) 30px;
+  text-align: center;
+  filter: drop-shadow(0 24px 50px rgba(0, 0, 0, 0.45));
+}
+
+.glass {
+  position: absolute;
+  inset: 0;
+  /* Clear acrylic: barely-there blur + faint sheen, so it reads as glass
+     without fogging what's behind it. */
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02) 40%, rgba(255, 255, 255, 0.02) 65%, rgba(255, 255, 255, 0.07)),
+    rgba(12, 14, 24, 0.42);
+  -webkit-backdrop-filter: blur(3px) saturate(130%);
+  backdrop-filter: blur(3px) saturate(130%);
+}
+
+.rim {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 10px;
+}
+
+.chip {
+  width: 30px;
+  height: 22px;
+  border-radius: 5px;
+  border: 1px solid rgba(240, 238, 255, 0.4);
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 5px, rgba(240, 238, 255, 0.28) 5px 6px),
+    rgba(230, 228, 245, 0.12);
+}
+
+.meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(236, 232, 255, 0.6);
+}

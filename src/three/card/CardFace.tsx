@@ -25,7 +25,7 @@ function paint(canvas: HTMLCanvasElement) {
   // Milky acrylic body: a faint cool fill that brightens toward the edges, so the
   // clear slab reads lighter than the backdrop (as in the reference) instead of
   // as a dark hole.
-  ctx.fillStyle = "rgba(190, 200, 225, 0.07)";
+  ctx.fillStyle = "rgba(190, 200, 225, 0.035)";
   ctx.fillRect(0, 0, W, H);
   const edge = 7 * u;
   const sides: Array<[number, number, number, number, number, number, number, number]> = [

@@ -1,12 +1,17 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { generateGalaxy, type GalaxyParams } from "./galaxy/generateGalaxy";
+import { generateGalaxy, type GalaxyBuffers, type GalaxyParams } from "./galaxy/generateGalaxy";
 import { galaxyFragmentShader, galaxyVertexShader } from "./galaxy/galaxyShader";
 import { scroll } from "./motionStore";
 
 export interface GalaxyParticlesProps {
-  params: GalaxyParams;
+  /** Either spiral params for the default generator… */
+  params?: GalaxyParams;
+  /** …or pre-generated buffers from a custom generator (e.g. generateAndromeda). */
+  buffers?: GalaxyBuffers;
+  /** 0 = soft glowing blobs, 1 = crisp pin-point glitter. */
+  sharpness?: number;
   /** Base point size before perspective attenuation. */
   size?: number;
   intensity?: number;
@@ -24,6 +29,8 @@ export interface GalaxyParticlesProps {
 
 export function GalaxyParticles({
   params,
+  buffers,
+  sharpness = 0,
   size = 28,
   intensity = 1,
   twinkle = 0.35,
@@ -38,7 +45,7 @@ export function GalaxyParticles({
   const dpr = useThree((s) => s.viewport.dpr);
 
   const geometry = useMemo(() => {
-    const b = generateGalaxy(params);
+    const b = buffers ?? generateGalaxy(params!);
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.BufferAttribute(b.positions, 3));
     g.setAttribute("color", new THREE.BufferAttribute(b.colors, 3));
@@ -46,7 +53,7 @@ export function GalaxyParticles({
     g.setAttribute("aSeed", new THREE.BufferAttribute(b.seeds, 1));
     return g;
     // Params object identity changes every render; key the memo by value instead.
-  }, [JSON.stringify(params)]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [buffers, JSON.stringify(params)]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const material = useMemo(
     () =>
@@ -59,6 +66,7 @@ export function GalaxyParticles({
           uPixelRatio: { value: dpr },
           uIntensity: { value: intensity },
           uTwinkle: { value: twinkle },
+          uSharpness: { value: sharpness },
         },
         vertexColors: true,
         blending: THREE.AdditiveBlending,
@@ -80,6 +88,7 @@ export function GalaxyParticles({
   material.uniforms.uPixelRatio.value = dpr;
   material.uniforms.uIntensity.value = intensity;
   material.uniforms.uTwinkle.value = animate ? twinkle : 0;
+  material.uniforms.uSharpness.value = sharpness;
 
   useFrame((state, delta) => {
     if (!points.current || !animate) return;

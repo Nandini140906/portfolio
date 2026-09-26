@@ -31,6 +31,7 @@ export const galaxyVertexShader = /* glsl */ `
 
 export const galaxyFragmentShader = /* glsl */ `
   uniform float uIntensity;
+  uniform float uSharpness;
 
   varying vec3 vColor;
   varying float vTwinkle;
@@ -40,7 +41,10 @@ export const galaxyFragmentShader = /* glsl */ `
     float d = length(gl_PointCoord - 0.5);
     // Soft radial falloff; the high exponent gives a bright pin-point
     // with a faint halo, which bloom then spreads.
-    float strength = pow(max(0.0, 1.0 - d * 2.0), 2.6);
+    float soft = pow(max(0.0, 1.0 - d * 2.0), 2.6);
+    // Glitter: gaussian pin-point core + faint halo — reads as a crisp dot.
+    float crisp = exp(-d * d * 70.0) + exp(-d * d * 14.0) * 0.18;
+    float strength = mix(soft, crisp, uSharpness);
     if (strength < 0.002) discard;
 
     gl_FragColor = vec4(vColor * strength * vTwinkle * uIntensity, 1.0);

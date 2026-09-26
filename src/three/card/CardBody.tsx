@@ -14,7 +14,7 @@ export interface CardBodyProps {
 }
 
 /** The clear acrylic slab + its glowing peach rim. */
-export function CardBody({ roughness = 0.08, rimColor = "#ffe0d6", rimOpacity = 0.9, isMobile = false }: CardBodyProps) {
+export function CardBody({ roughness = 0.02, rimColor = "#ffe0d6", rimOpacity = 0.9, isMobile = false }: CardBodyProps) {
   const shape = useMemo(createCardShape, []);
 
   const geometry = useMemo(() => {
@@ -54,11 +54,14 @@ export function CardBody({ roughness = 0.08, rimColor = "#ffe0d6", rimOpacity = 
           ior={1.45}
           clearcoat={1}
           clearcoatRoughness={0.05}
-          chromaticAberration={0.06}
-          anisotropicBlur={0.05}
+          // No aberration / anisotropic blur: they smeared the galaxy's glitter into
+          // streaks. The reference galaxy reads through perfectly clear acrylic.
+          chromaticAberration={0}
+          anisotropicBlur={0}
           distortion={0}
           samples={isMobile ? 3 : 8}
-          resolution={isMobile ? 384 : 1024}
+          // Full-res transmission buffer on desktop (undefined = canvas size) keeps dots crisp.
+          resolution={isMobile ? 512 : undefined}
           backside={false}
           color="#f3f0ff"
           envMapIntensity={1.4}

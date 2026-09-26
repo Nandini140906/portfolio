@@ -3,16 +3,11 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { CardBody } from "./CardBody";
 import { CardFace } from "./CardFace";
-import { GalaxyParticles } from "../GalaxyParticles";
-import { CoreGlow } from "../CoreGlow";
+import { CardGalaxy } from "./CardGalaxy";
 import { BokehField } from "../BokehField";
-import type { GalaxyParams } from "../galaxy/generateGalaxy";
-import type { GalaxyLook } from "../useGalaxyControls";
 import { pointer, scroll } from "../motionStore";
 
 export interface HeroCardProps {
-  galaxy: GalaxyParams;
-  look: GalaxyLook;
   /** Resting pose: the reference card leans right and tips its top away from camera. */
   rotation?: [number, number, number];
   position?: [number, number, number];
@@ -22,8 +17,6 @@ export interface HeroCardProps {
 }
 
 export function HeroCard({
-  galaxy,
-  look,
   rotation = [-0.42, 0.28, -0.46],
   position = [0, 0, 0],
   scale = 1,
@@ -56,17 +49,12 @@ export function HeroCard({
     <group position={position} scale={scale}>
       <group ref={pose} rotation={rotation}>
         {/*
-          Galaxy embedded in the slab. The disc is generated in XZ (normal = +Y);
-          rotating it 0.32 rad about X leaves its normal ~71° from the view axis,
-          so it projects as a ~0.31 aspect ellipse — the Andromeda-like view; the outer z-squash flattens that
-          tilted disc into the card's thin volume without changing how it looks
-          from the front (squashing along the view axis is invisible).
+          Galaxy embedded in the slab. The z-squash flattens the tilted disc into the
+          card's thin volume without changing how it looks from the front (squashing
+          along the view axis is invisible); the z-rotation lays it diagonally.
         */}
         <group scale={[1, 1, 0.12]} rotation={[0, 0, 0.95]}>
-          <group rotation={[0.32, 0, 0]}>
-            <GalaxyParticles params={galaxy} {...look} animate={animate} scrollSpin={0.6} />
-            <CoreGlow radius={0.55} intensity={0.32} color="#ffb899" />
-          </group>
+          <CardGalaxy isMobile={isMobile} animate={animate} />
         </group>
         <CardFace z={-0.012} />
         <CardBody isMobile={isMobile} />

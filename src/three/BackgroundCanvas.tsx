@@ -3,6 +3,8 @@ import { Canvas } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Effects } from "./Effects";
 import { GalaxyScene } from "./GalaxyScene";
+import { SpiralScene } from "./SpiralScene";
+import { useBgVariant } from "./bgVariant";
 import { attachMotionListeners } from "./motionStore";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
@@ -14,6 +16,8 @@ export function BackgroundCanvas() {
   const reducedMotion = usePrefersReducedMotion();
   const visible = usePageVisible();
   const animate = !reducedMotion;
+  const variant = useBgVariant();
+  const Scene = variant === "b" ? SpiralScene : GalaxyScene;
 
   useEffect(attachMotionListeners, []);
 
@@ -39,7 +43,7 @@ export function BackgroundCanvas() {
       >
         <color attach="background" args={["#07070c"]} />
         <Suspense fallback={null}>
-          <GalaxyScene isMobile={isMobile} animate={animate} />
+          <Scene key={variant} isMobile={isMobile} animate={animate} />
           {!isMobile && !reducedMotion && <Effects {...bloom} />}
         </Suspense>
       </Canvas>

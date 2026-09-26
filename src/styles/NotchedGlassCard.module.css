@@ -21,7 +21,7 @@
   backdrop-filter: blur(12px) saturate(140%);
 }
 
-.water {
+.liquid {
   position: absolute;
   inset: 0;
   width: 100%;

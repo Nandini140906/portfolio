@@ -1,14 +1,14 @@
 import { useEffect, useRef, type RefObject } from "react";
 import { attachMotionListeners, pointer } from "../three/motionStore";
-import type { TiltState } from "./water/WaterLayer";
+import type { TiltState } from "./liquid/LiquidLayer";
 
 const MAX_RX = 9; // degrees, pointer up/down
 const MAX_RY = 12; // degrees, pointer left/right
 
 /**
  * Smoothly tilts an element in 3D toward the pointer (applied straight to its
- * transform — no React re-renders). Returns the live tilt so the water can
- * counter-tilt and slosh.
+ * transform — no React re-renders). Returns the live tilt so the liquid layer can
+ * shift its highlights.
  */
 export function useCardTilt(ref: RefObject<HTMLElement>, enabled: boolean) {
   const tilt = useRef<TiltState>({ rx: 0, ry: 0, speed: 0 });

@@ -1,17 +1,24 @@
 import { useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { notchedPath } from "./notchedPath";
 import { site } from "../data/content";
+import { WaterLayer } from "./water/WaterLayer";
+import { useCardTilt } from "./useCardTilt";
+import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import styles from "../styles/NotchedGlassCard.module.css";
 
 /**
  * Compact clear-acrylic card in the reference's shape (side notches, bottom slot,
- * glowing peach rim + inner bevel line). The outline is generated for the card's
- * measured pixel size so corners and notches never stretch.
+ * glowing peach rim + inner bevel line), holding a layer of water. The card tilts
+ * in 3D toward the pointer while the water inside stays level and sloshes.
+ * The outline is generated for the card's measured pixel size so corners and
+ * notches never stretch.
  */
 export function NotchedGlassCard({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const id = useId().replace(/:/g, "");
+  const reducedMotion = usePrefersReducedMotion();
+  const tilt = useCardTilt(ref, !reducedMotion);
 
   useLayoutEffect(() => {
     const el = ref.current;
@@ -31,6 +38,15 @@ export function NotchedGlassCard({ children }: { children: ReactNode }) {
     <div ref={ref} className={styles.card}>
       {/* Glass body, clipped to the notched outline. */}
       <div className={styles.glass} style={outer ? { clipPath: `path('${outer}')` } : undefined} />
+      {/* Water inside the glass, clipped to the inner bevel so it sits within the slab. */}
+      {inner && (
+        <WaterLayer
+          tilt={tilt}
+          animate={!reducedMotion}
+          className={styles.water}
+          style={{ clipPath: `path('${inner}')` }}
+        />
+      )}
 
       {outer && (
         <svg className={styles.rim} width={size.w} height={size.h} aria-hidden="true">

@@ -3,6 +3,7 @@ import { useControls } from "leva";
 import { CameraRig } from "./CameraRig";
 import { Backdrop } from "./Backdrop";
 import { SpiralBackdrop } from "./SpiralBackdrop";
+import { GoldDrops } from "./GoldDrops";
 import { CoreGlow } from "./CoreGlow";
 import { GalaxyParticles } from "./GalaxyParticles";
 import { generateAndromeda } from "./galaxy/generateAndromeda";
@@ -44,6 +45,10 @@ export function GalaxyScene({ isMobile, animate }: GalaxySceneProps) {
       glow: { value: 0.7, min: 0, max: 2, step: 0.01 },
       /** Vertical position (world units); 0 = centred behind the name card. */
       offsetY: { value: 0, min: -3, max: 3, step: 0.01 },
+      /** Golden light-drops scattered across the whole screen. */
+      drops: { value: 140, min: 0, max: 500, step: 5 },
+      dropSize: { value: 260, min: 20, max: 800, step: 5 },
+      dropGlow: { value: 1, min: 0, max: 3, step: 0.05 },
     },
     { collapsed: true },
   );
@@ -103,6 +108,14 @@ export function GalaxyScene({ isMobile, animate }: GalaxySceneProps) {
           </group>
         </group>
       </group>
+      {/* Width/height of the drop field match what the long-lens camera sees. */}
+      <GoldDrops
+        count={isMobile ? Math.round(v.drops * 0.45) : v.drops}
+        extent={isMobile ? [3.6, 7, 4] : [9, 5, 4]}
+        size={v.dropSize}
+        intensity={v.dropGlow}
+        animate={animate}
+      />
     </>
   );
 }

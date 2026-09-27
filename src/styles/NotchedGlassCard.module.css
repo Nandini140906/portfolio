@@ -95,3 +95,9 @@
     rgba(230, 228, 245, 0.12);
 }
 
+
+/* WebGL is drawing the (distortable) text: hide the DOM copy visually only. */
+.textLive h1,
+.textLive p {
+  opacity: 0;
+}

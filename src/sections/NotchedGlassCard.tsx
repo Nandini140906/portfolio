@@ -12,7 +12,8 @@ const DEPTH_STEPS = [0.15, 0.3, 0.45, 0.6, 0.75, 0.9];
 /**
  * Compact clear-acrylic card in the reference's shape (side notches, bottom slot,
  * glowing peach rim + inner bevel line) with dissolved liquid swirling inside.
- * The card tilts in 3D toward the pointer; hovering ripples the liquid.
+ * The card floats and tilts in 3D toward the pointer; moving the cursor over it
+ * melts the type into liquid chrome along the cursor's path.
  * The outline is generated for the card's measured pixel size so corners and
  * notches never stretch.
  */
@@ -23,6 +24,10 @@ export function NotchedGlassCard({ children }: { children: ReactNode }) {
   const reducedMotion = usePrefersReducedMotion();
   const introCovering = useIntroCovering(); // hidden under the intro → don't animate
   const shadowRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  // True once the WebGL layer is drawing the text — then the DOM copy goes invisible
+  // (still selectable + read by screen readers). Without WebGL it simply stays.
+  const [liquidText, setLiquidText] = useState(false);
   const tilt = useCardTilt(ref, !reducedMotion, shadowRef);
 
   useLayoutEffect(() => {
@@ -97,6 +102,8 @@ export function NotchedGlassCard({ children }: { children: ReactNode }) {
         <LiquidLayer
           tilt={tilt}
           animate={!reducedMotion && !introCovering}
+          textRoot={contentRef}
+          onTextReady={setLiquidText}
           className={styles.liquid}
           style={{ clipPath: `path('${inner}')` }}
         />
@@ -140,7 +147,7 @@ export function NotchedGlassCard({ children }: { children: ReactNode }) {
         </svg>
       )}
 
-      <div className={styles.content}>
+      <div ref={contentRef} className={`${styles.content} ${liquidText ? styles.textLive : ""}`}>
         <div className={styles.topRow} aria-hidden="true">
           <span className={styles.chip} />
         </div>

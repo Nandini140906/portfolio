@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { nav } from "../data/content";
+import { contact, nav } from "../data/content";
 import styles from "../styles/Nav.module.css";
 
 /** Minimal fixed top nav: mono logo + section links; gains a glass backing once scrolled. */
+const linkedin = contact.socials.find((s) => s.label === "LinkedIn")?.href;
+
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -26,6 +28,13 @@ export function Nav() {
               </a>
             </li>
           ))}
+          {linkedin && (
+            <li>
+              <a href={linkedin} target="_blank" rel="noreferrer" className={`${styles.link} ${styles.ext}`}>
+                LinkedIn <span aria-hidden="true">↗</span>
+              </a>
+            </li>
+          )}
         </ul>
       </nav>
     </header>

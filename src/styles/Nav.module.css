@@ -73,3 +73,18 @@
 .link:focus-visible::after {
   transform: scaleX(1);
 }
+
+.ext {
+  color: var(--gold);
+}
+
+/* Narrow phones: keep the nav on one line. */
+@media (max-width: 420px) {
+  .nav {
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+  }
+  .links {
+    gap: 14px;
+  }
+}

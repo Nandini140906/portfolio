@@ -13,6 +13,16 @@
   align-items: center;
 }
 
+.box header > p {
+  justify-content: center;
+}
+
+/* Centre the giant outlined number too. */
+.box header > span:first-child {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .box h2 {
   margin-inline: auto;
 }

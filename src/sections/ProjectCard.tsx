@@ -9,8 +9,8 @@ const onImgError = (e: SyntheticEvent<HTMLImageElement>) => {
 };
 
 export function ProjectCard({ project }: { project: Project }) {
-  const { title, blurb, stack, image, liveUrl, repoUrl, featured } = project;
-  const hasLive = liveUrl && liveUrl !== "#";
+  const { title, blurb, stack, image, liveUrl, repoUrl, note, featured } = project;
+  const hasLive = !!liveUrl && liveUrl !== "#";
   return (
     <article className={`${styles.card} ${featured ? styles.featured : ""}`}>
       <div className={styles.media}>
@@ -31,7 +31,7 @@ export function ProjectCard({ project }: { project: Project }) {
               Live site <span aria-hidden="true">↗</span>
             </a>
           ) : (
-            <span className={`${styles.link} ${styles.disabled}`}>Coming soon</span>
+            <span className={`${styles.link} ${styles.disabled}`}>{note ?? "Coming soon"}</span>
           )}
           {repoUrl && (
             <a href={repoUrl} target="_blank" rel="noreferrer" className={styles.link} data-magnetic>

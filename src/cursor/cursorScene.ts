@@ -21,6 +21,9 @@ export class CursorScene {
   /** 0 → 1 while over a link/button: the cluster tightens and brightens. */
   private hover = 0;
   hoverTarget = 0;
+  /** 0 → 1 over text/info: the web fades out, only the string (trail) remains. */
+  private reading = 0;
+  readingTarget = 0;
   private presence = 0;
 
   constructor() {
@@ -40,6 +43,8 @@ export class CursorScene {
     ctx.clearRect(0, 0, w, h);
     const ease = (k: number) => 1 - Math.exp(-k * dt);
     this.hover += (this.hoverTarget - this.hover) * ease(8);
+    this.reading += (this.readingTarget - this.reading) * ease(6);
+    const web = 1 - this.reading; // visibility of the node web
     this.presence += ((this.inside ? 1 : 0) - this.presence) * ease(5);
     if (this.presence < 0.01 && this.trail.points.length === 0) return;
 
@@ -50,7 +55,7 @@ export class CursorScene {
       const a = o.angle + now * o.speed;
       n.tx = this.x + Math.cos(a) * o.radius * spread;
       n.ty = this.y + Math.sin(a) * o.radius * spread;
-      n.targetAlpha = this.presence * (0.55 + 0.45 * this.hover);
+      n.targetAlpha = this.presence * (0.55 + 0.45 * this.hover) * web;
       if (n.alpha < 0.01) {
         n.x = this.x;
         n.y = this.y;
@@ -61,14 +66,14 @@ export class CursorScene {
     if (this.inside) this.trail.push(this.x, this.y, now);
     this.trail.prune(now);
 
-    const fade = Math.min(1, this.presence * (1 + 0.4 * this.hover));
+    const fade = Math.min(1, this.presence * (1 + 0.4 * this.hover)) * web;
     // Thin links from the nearest nodes back to the pointer head.
     ctx.globalCompositeOperation = "lighter";
     ctx.lineWidth = plexusConfig.lineWidth;
     for (const n of this.plexus.nodes) {
       const d = Math.hypot(n.x - this.x, n.y - this.y);
       if (d > 48 * spread + 10) continue;
-      ctx.strokeStyle = rgba(plexusConfig.color, plexusConfig.lineAlphaMax * (1 - d / 70) * n.alpha);
+      ctx.strokeStyle = rgba(plexusConfig.color, plexusConfig.lineAlphaMax * (1 - d / 70) * n.alpha * web);
       ctx.beginPath();
       ctx.moveTo(this.x, this.y);
       ctx.lineTo(n.x, n.y);
@@ -77,8 +82,9 @@ export class CursorScene {
     ctx.globalCompositeOperation = "source-over";
 
     drawFilament(ctx, this.trail, now, 0.75);
-    drawPlexus(ctx, this.plexus, plexusConfig.linkDist * 0.55, 0.7, fade);
-    // Bright head node; swells a little on hover.
-    drawGlow(ctx, this.x, this.y, plexusConfig.filamentHeadGlow * (0.7 + 0.5 * this.hover), this.presence);
+    if (web > 0.01) drawPlexus(ctx, this.plexus, plexusConfig.linkDist * 0.55, 0.7, fade);
+    // Bright head node; swells a little on hover, shrinks to a small point while reading.
+    const headR = plexusConfig.filamentHeadGlow * (0.7 + 0.5 * this.hover) * (1 - 0.55 * this.reading);
+    drawGlow(ctx, this.x, this.y, headR, this.presence);
   }
 }

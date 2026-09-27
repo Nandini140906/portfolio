@@ -14,14 +14,6 @@ export function About() {
                 {p}
               </p>
             ))}
-            <dl className={styles.facts} data-reveal-stagger>
-              {about.facts.map((f) => (
-                <div key={f.label} className={styles.fact}>
-                  <dt>{f.label}</dt>
-                  <dd>{f.value}</dd>
-                </div>
-              ))}
-            </dl>
           </div>
         </div>
       </div>

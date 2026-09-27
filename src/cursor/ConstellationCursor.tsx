@@ -5,6 +5,8 @@ import styles from "../styles/Cursor.module.css";
 
 const QUERY = "(pointer: fine) and (prefers-reduced-motion: no-preference)";
 const INTERACTIVE = "a, button, [data-magnetic]";
+/** Where people read: over these the cursor drops the web and keeps just the string. */
+const READING = "p, li, dd, dt, h1, h2, h3, h4, .panel, article, [role='dialog'], [data-reading]";
 
 /** Live check: only fine pointers (mouse/trackpad) and motion allowed. */
 function useCursorEnabled(): boolean {
@@ -55,7 +57,10 @@ function CursorCanvas() {
       scene.x = e.clientX;
       scene.y = e.clientY;
       scene.inside = true;
-      scene.hoverTarget = (e.target as Element | null)?.closest?.(INTERACTIVE) ? 1 : 0;
+      const t = e.target as Element | null;
+      const interactive = !!t?.closest?.(INTERACTIVE);
+      scene.hoverTarget = interactive ? 1 : 0;
+      scene.readingTarget = !interactive && t?.closest?.(READING) ? 1 : 0;
     };
     const onLeave = () => {
       scene.inside = false;

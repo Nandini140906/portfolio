@@ -7,7 +7,11 @@
   .grid {
     grid-template-columns: 1fr 1.1fr;
     gap: 64px;
-    align-items: start;
+    align-items: center; /* heading sits level with the middle of the card */
+  }
+  /* The heading's own bottom margin would push it off-centre here. */
+  .grid > :first-child {
+    margin-bottom: 0;
   }
 }
 
@@ -15,38 +19,13 @@
   max-width: 60ch;
 }
 
+.para:last-child {
+  margin-bottom: 0;
+}
+
 .para {
   margin: 0 0 1.1em;
   font-size: clamp(1.02rem, 1.4vw, 1.15rem);
   line-height: 1.7;
   color: var(--dim);
-}
-
-.facts {
-  display: grid;
-  gap: 12px;
-  margin: 28px 0 0;
-  padding-top: 24px;
-  border-top: 1px solid var(--line);
-}
-
-.fact {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.fact dt {
-  color: var(--dimmer);
-}
-
-.fact dd {
-  margin: 0;
-  color: var(--white);
-  text-align: right;
 }

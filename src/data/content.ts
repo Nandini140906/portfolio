@@ -4,6 +4,8 @@ export const site = {
   name: "Nandini Das",
   tagline: "Developer & automation builder",
   email: "nandiniii149@gmail.com",
+  phone: "+91 84850 46895",
+  phoneHref: "tel:+918485046895",
 };
 
 /** "Say hello" opens WhatsApp with this message already typed. */
@@ -19,11 +21,6 @@ export const about = {
   paragraphs: [
     "Your team shouldn't spend hours copying leads into spreadsheets, chasing follow-ups or writing up meeting notes. I build automations that do that work for you — instantly, accurately, around the clock — so you can focus on closing deals and serving clients.",
     "I also design and build fast, modern websites that make a strong first impression and turn visitors into enquiries. From the first idea to launch, you get one person who understands both the design and the systems behind it — and who stays until it works exactly the way you need.",
-  ],
-  facts: [
-    { label: "What I do", value: "Automation & websites" },
-    { label: "Turnaround", value: "Fast, clear updates" },
-    { label: "Status", value: "Open to new projects" },
   ],
 };
 

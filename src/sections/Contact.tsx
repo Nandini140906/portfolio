@@ -9,9 +9,14 @@ export function Contact() {
         <div className={`panel ${styles.box}`} data-reveal>
           <SectionHeading id="contact-title" index="04" label="Contact" title={contact.heading} />
           <p className={styles.blurb}>{contact.blurb}</p>
-          <a href={`mailto:${site.email}`} className={styles.email}>
-            {site.email}
-          </a>
+          <div className={styles.direct}>
+            <a href={`mailto:${site.email}`} className={styles.email}>
+              {site.email}
+            </a>
+            <a href={site.phoneHref} className={styles.phone}>
+              <span className={styles.phoneLabel}>Call</span> {site.phone}
+            </a>
+          </div>
           <div className={styles.actions}>
             <a href={whatsappUrl} target="_blank" rel="noreferrer" className={styles.cta} data-magnetic>
               Say hello on WhatsApp <span aria-hidden="true">→</span>

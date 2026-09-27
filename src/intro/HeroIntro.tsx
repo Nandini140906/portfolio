@@ -95,11 +95,12 @@ export default function HeroIntro({ onDone }: HeroIntroProps) {
         .to(B, { fade: 1, duration: 0.6 * d, ease: "power1.in" }, 5.0 * d)
         .to(root.current, { autoAlpha: 0, duration: 0.6 * d, ease: "power1.inOut" }, 5.05 * d);
 
-      showLine(0, 0.15 * d);
-      showLine(1, 1.1 * d);
-      showLine(2, 1.8 * d);
-      showLine(3, 3.1 * d);
-      if (lines[3]) tl.to(lines[3], { autoAlpha: 0, y: -10, duration: 0.4 * d }, "join");
+      // Spread however many lines there are evenly over 0.2s → the join,
+      // so each stays up long enough to read.
+      const span = (4.3 - 0.2) / Math.max(1, lines.length);
+      lines.forEach((_, i) => showLine(i, (0.2 + i * span) * d));
+      const lastLine = lines[lines.length - 1];
+      if (lastLine) tl.to(lastLine, { autoAlpha: 0, y: -10, duration: 0.4 * d }, "join");
 
       // Skip: jump straight to a quick handoff.
       let skipped = false;

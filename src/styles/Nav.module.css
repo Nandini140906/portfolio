@@ -10,9 +10,9 @@
   gap: 16px;
   padding: 18px clamp(16px, 4vw, 40px);
   font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.06em;
   transition: background-color 0.3s ease, padding 0.3s ease, border-color 0.3s ease;
   border-bottom: 1px solid transparent;
 }
@@ -20,48 +20,62 @@
 .scrolled {
   padding-top: 12px;
   padding-bottom: 12px;
-  background: rgba(7, 7, 12, 0.55);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  background: rgba(7, 7, 12, 0.6);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   border-bottom-color: var(--line);
 }
 
+/* Name: sans first name + serif-italic surname, echoing the headings. */
 .logo {
   color: var(--white);
   text-decoration: none;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
 }
 
-.dot {
+.logoAccent {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.2em;
+  font-style: italic;
   color: var(--gold);
 }
 
 .links {
+  position: relative;
   display: flex;
-  gap: clamp(16px, 3vw, 32px);
+  align-items: center;
+  gap: clamp(14px, 2.6vw, 30px);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.link {
-  position: relative;
-  color: var(--dim);
-  text-decoration: none;
-  transition: color 0.2s ease;
+/* Glowing pill that slides to the section in view. */
+.pill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 32px;
+  margin-top: -16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 201, 138, 0.35);
+  box-shadow: 0 0 18px rgba(255, 201, 138, 0.18), inset 0 0 12px rgba(255, 201, 138, 0.08);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
-.link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -4px;
-  height: 1px;
-  background: var(--gold);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.25s ease;
+.link {
+  position: relative;
+  display: inline-block;
+  color: var(--dim);
+  text-decoration: none;
+  transition: color 0.25s ease;
 }
 
 .link:hover,
@@ -69,22 +83,40 @@
   color: var(--white);
 }
 
-.link:hover::after,
-.link:focus-visible::after {
-  transform: scaleX(1);
+.active {
+  color: var(--white);
 }
 
-.ext {
-  color: var(--gold);
+/* Scroll progress along the bottom edge of the bar. */
+.progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold-hot), var(--gold), var(--blue-soft));
+  box-shadow: 0 0 10px rgba(255, 201, 138, 0.6);
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
 }
 
-/* Narrow phones: keep the nav on one line. */
+@media (max-width: 640px) {
+  .hideSm {
+    display: none;
+  }
+}
+
+/* Narrow phones: keep everything on one line. */
 @media (max-width: 420px) {
   .nav {
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+  }
+  .logo {
+    font-size: 15px;
   }
   .links {
-    gap: 14px;
+    gap: 12px;
   }
 }

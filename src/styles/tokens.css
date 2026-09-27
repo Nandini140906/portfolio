@@ -18,5 +18,5 @@
   /* type */
   --font-display: "Instrument Serif", serif;    /* headings — use italic for accent words */
   --font-body:    "Inter Variable", "Inter", sans-serif;
-  --font-mono:    "Space Mono", monospace;       /* labels, nav, section numbers, code accents */
+  --font-mono:    "Inter Variable", "Inter", sans-serif; /* small uppercase labels, nav, buttons */
 }

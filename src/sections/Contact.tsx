@@ -1,5 +1,5 @@
 import { SectionHeading } from "../components/SectionHeading";
-import { contact, site } from "../data/content";
+import { contact, site, whatsappUrl } from "../data/content";
 import styles from "../styles/Contact.module.css";
 
 export function Contact() {
@@ -13,8 +13,8 @@ export function Contact() {
             {site.email}
           </a>
           <div className={styles.actions}>
-            <a href={`mailto:${site.email}`} className={styles.cta} data-magnetic>
-              Say hello <span aria-hidden="true">→</span>
+            <a href={whatsappUrl} target="_blank" rel="noreferrer" className={styles.cta} data-magnetic>
+              Say hello on WhatsApp <span aria-hidden="true">→</span>
             </a>
             <ul className={styles.socials}>
               {contact.socials.map((s) => (

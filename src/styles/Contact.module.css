@@ -39,17 +39,17 @@
   font-family: var(--font-display);
   font-size: clamp(1.4rem, 4.2vw, 2.6rem);
   font-style: italic;
-  color: var(--gold);
+  color: var(--white);
   text-decoration: none;
   word-break: break-all;
-  border-bottom: 1px solid rgba(255, 201, 138, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
   transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 .email:hover,
 .email:focus-visible {
-  color: var(--white);
-  border-color: var(--white);
+  color: var(--gold);
+  border-color: var(--gold);
 }
 
 .actions {
@@ -71,8 +71,9 @@
   background: var(--white);
   color: var(--bg);
   font-family: var(--font-mono);
+  font-weight: 500;
   font-size: 13px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
   transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
@@ -94,8 +95,9 @@
 
 .social {
   font-family: var(--font-mono);
+  font-weight: 500;
   font-size: 12px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--dim);
   text-decoration: none;

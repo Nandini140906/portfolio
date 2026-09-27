@@ -90,6 +90,9 @@ export const liquidFragmentShader = /* glsl */ `
     vec3 ln = normalize(vec3(-lensSlope * 0.9, 1.0));
     float lensSpec = pow(max(dot(ln, H), 0.0), 40.0) * length(lensSlope);
     glassCol += vec3(1.0, 0.96, 0.92) * lensSpec * 0.35;
+    // Calm the swirl in the middle of the card, where the name sits, for legibility.
+    float calm = 1.0 - 0.6 * (1.0 - smoothstep(0.15, 0.5, length((vUv - 0.5) * vec2(1.0, 1.6))));
+    glassCol *= calm;
     float glassA = clamp(max(max(glassCol.r, glassCol.g), glassCol.b) * 1.1, 0.0, 1.0);
 
     if (uHasText < 0.5) { gl_FragColor = vec4(glassCol, glassA); return; }

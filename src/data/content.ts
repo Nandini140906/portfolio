@@ -1,41 +1,42 @@
-// Site-wide copy. Everything marked TODO is placeholder — edit freely.
+// Site-wide copy. Edit freely — one accent word per heading goes in *asterisks*.
 
 export const site = {
   name: "Nandini Das",
   tagline: "Developer & automation builder",
   email: "nandiniii149@gmail.com",
-  heroLabel: "// developer portfolio", // TODO: edit (small mono label above the card)
 };
 
+/** "Say hello" opens WhatsApp with this message already typed. */
+export const whatsapp = {
+  number: "918485046895", // international format, no + or spaces
+  message:
+    "Hi Nandini! I came across your portfolio and I'd love to talk about a project. Are you available for a quick chat?",
+};
+export const whatsappUrl = `https://wa.me/${whatsapp.number}?text=${encodeURIComponent(whatsapp.message)}`;
+
 export const about = {
-  // One accent word per heading goes in *asterisks*.
-  heading: "Building things that *work* for you",
+  heading: "I build things that *work* for your business",
   paragraphs: [
-    // TODO: replace with your own words.
-    "I'm a developer who likes turning messy, repetitive work into clean systems — web apps people enjoy using, and automations that quietly run in the background.",
-    "Most of my time goes into full-stack projects with React and TypeScript, and into automation with n8n and LLM-powered tools. I care about things that ship, stay fast and are easy to hand over.",
+    "Your team shouldn't spend hours copying leads into spreadsheets, chasing follow-ups or writing up meeting notes. I build automations that do that work for you — instantly, accurately, around the clock — so you can focus on closing deals and serving clients.",
+    "I also design and build fast, modern websites that make a strong first impression and turn visitors into enquiries. From the first idea to launch, you get one person who understands both the design and the systems behind it — and who stays until it works exactly the way you need.",
   ],
-  // Short facts shown as mono labels next to the text.
   facts: [
-    { label: "Based in", value: "TODO: city" }, // TODO
-    { label: "Focus", value: "Full-stack & automation" },
-    { label: "Status", value: "TODO: open to work?" }, // TODO
+    { label: "What I do", value: "Automation & websites" },
+    { label: "Turnaround", value: "Fast, clear updates" },
+    { label: "Status", value: "Open to new projects" },
   ],
 };
 
 export const skills: { group: string; items: string[] }[] = [
-  // TODO: adjust groups and items to your real stack.
-  { group: "AI & automation", items: ["n8n", "LLM apps", "Prompt design", "APIs & webhooks"] },
-  { group: "Full-stack", items: ["React", "TypeScript", "Vite", "Node.js"] },
-  { group: "3D & motion", items: ["Three.js", "React Three Fiber", "GSAP", "WebGL shaders"] },
-  { group: "Tooling", items: ["Git & GitHub", "Vercel", "Figma"] },
+  { group: "Automation", items: ["n8n", "Python", "FastAPI", "APIs", "Browser automation"] },
+  { group: "Websites", items: ["Figma", "Three.js", "AI tools"] },
 ];
 
 export const contact = {
   heading: "Let's build something *together*",
-  blurb: "Have a project, a workflow to automate, or just want to say hi? My inbox is open.", // TODO: edit
+  blurb: "Have a project, a workflow to automate, or just want to say hi? Message me on WhatsApp or drop an email.",
   socials: [
-    { label: "GitHub", href: "https://github.com/Nandini140906" }, // TODO: confirm
+    { label: "GitHub", href: "https://github.com/Nandini140906" },
     { label: "LinkedIn", href: "https://www.linkedin.com/in/nandini-das-808144338/" },
   ],
 };
@@ -43,5 +44,6 @@ export const contact = {
 export const nav = [
   { label: "Work", href: "#work" },
   { label: "About", href: "#about" },
+  { label: "Skills", href: "#skills" },
   { label: "Contact", href: "#contact" },
 ];

@@ -28,8 +28,8 @@ export function paintText(
   ctx.textBaseline = "alphabetic";
   ctx.textAlign = "left";
   // Soft dark halo keeps the type legible over the galaxy glow (mirrors the CSS text-shadow).
-  ctx.shadowColor = "rgba(7, 7, 12, 0.55)";
-  ctx.shadowBlur = 18 * scale;
+  ctx.shadowColor = "rgba(5, 5, 10, 0.9)";
+  ctx.shadowBlur = 22 * scale;
 
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   const range = document.createRange();

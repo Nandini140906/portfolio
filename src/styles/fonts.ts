@@ -3,5 +3,3 @@
 import "@fontsource/instrument-serif/400.css";
 import "@fontsource/instrument-serif/400-italic.css";
 import "@fontsource-variable/inter/wght.css";
-import "@fontsource/space-mono/400.css";
-import "@fontsource/space-mono/700.css";

@@ -50,7 +50,7 @@
      (crisp arms would fight the text), plus a faint diagonal sheen. */
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02) 40%, rgba(255, 255, 255, 0.02) 65%, rgba(255, 255, 255, 0.07)),
-    rgba(12, 14, 24, 0.38);
+    rgba(10, 11, 20, 0.52);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   backdrop-filter: blur(12px) saturate(140%);
 }

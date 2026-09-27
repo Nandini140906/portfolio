@@ -10,16 +10,6 @@
   text-align: center;
 }
 
-.micro {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--dim);
-  text-shadow: 0 0 12px rgba(7, 7, 12, 0.9), 0 0 4px rgba(7, 7, 12, 0.9);
-}
-
 .title {
   font-size: clamp(3rem, 8.4vw, 6.4rem);
   /* Keeps the name legible over the galaxy core glowing through the glass. */
@@ -28,8 +18,9 @@
 
 .tagline {
   margin: 0.9rem 0 0;
-  font-size: clamp(1rem, 1.9vw, 1.35rem);
-  color: var(--dim);
+  font-size: clamp(1.05rem, 2vw, 1.4rem);
+  font-weight: 500;
+  color: #e6e3f7;
 }
 
 /* Scroll cue: mono label + a line with a light pulse travelling down it. */
@@ -43,6 +34,7 @@
   align-items: center;
   gap: 10px;
   font-family: var(--font-mono);
+  font-weight: 500;
   font-size: 11px;
   letter-spacing: 0.3em;
   text-transform: uppercase;

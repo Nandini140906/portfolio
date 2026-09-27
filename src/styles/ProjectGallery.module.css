@@ -51,10 +51,11 @@
 .label {
   margin: 0 0 6px;
   font-family: var(--font-mono);
+  font-weight: 500;
   font-size: 11px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--dim);
 }
 
 .title {
@@ -107,9 +108,10 @@
 .num {
   flex: none;
   font-family: var(--font-mono);
+  font-weight: 500;
   font-size: 12px;
   line-height: 1.9;
-  color: var(--gold);
+  color: var(--dimmer);
 }
 
 .img {

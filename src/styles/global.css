@@ -53,17 +53,22 @@ img {
   color: var(--bg);
 }
 
-/* NOTE: native cursor is hidden in Phase 4, only when the constellation cursor is active. */
-
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 72px; /* clear the fixed nav when jumping to anchors */
+/* Native cursor hidden only while the constellation cursor is running
+   (fine pointer + motion allowed — see src/cursor/ConstellationCursor.tsx). */
+html.has-constellation-cursor,
+html.has-constellation-cursor * {
+  cursor: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+html {
+  /* In-page links glide via GSAP (src/animations/useAnchorGlide.ts); this only
+     covers direct #hash loads. */
+  scroll-padding-top: 72px;
+}
+
+/* Sections receive focus after a nav jump; no visible ring on the whole block. */
+section:focus {
+  outline: none;
 }
 
 /* ---- shared layout ---- */

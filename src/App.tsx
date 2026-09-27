@@ -2,6 +2,7 @@ import { Suspense, lazy, useState } from "react";
 import { Leva } from "leva";
 import { BackgroundCanvas } from "./three/BackgroundCanvas";
 import { Nav } from "./components/Nav";
+import { ConstellationCursor } from "./cursor/ConstellationCursor";
 import { Footer } from "./components/Footer";
 import { Hero } from "./sections/Hero";
 import { About } from "./sections/About";
@@ -11,6 +12,7 @@ import { Contact } from "./sections/Contact";
 import { shouldPlayIntro } from "./intro/introGate";
 import { setIntroCovering, useIntroCovering } from "./intro/introStore";
 import { useScrollAnimations } from "./animations/useScrollAnimations";
+import { useAnchorGlide } from "./animations/useAnchorGlide";
 import styles from "./styles/App.module.css";
 
 // Intro code is split into its own chunk so it never delays the site's first paint.
@@ -23,6 +25,7 @@ export default function App() {
   const introCovering = useIntroCovering();
   // Reveals are set up once the page is actually visible (after the intro hands off).
   useScrollAnimations(!introCovering);
+  useAnchorGlide();
   const hidden = introCovering ? { visibility: "hidden" as const } : undefined;
 
   return (
@@ -43,6 +46,7 @@ export default function App() {
         </Suspense>
       )}
       <BackgroundCanvas />
+      <ConstellationCursor />
       <div style={hidden}>
         <Nav />
       </div>

@@ -35,8 +35,9 @@
   justify-content: space-between;
   gap: 16px;
   font-family: var(--font-mono);
+  font-weight: 500;
   font-size: 12px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 

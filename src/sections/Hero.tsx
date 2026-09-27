@@ -5,7 +5,6 @@ import styles from "../styles/Hero.module.css";
 export function Hero() {
   return (
     <section id="top" className={styles.hero} aria-label="Intro">
-      <p className={styles.micro} data-hero-micro>{site.heroLabel}</p>
       <NotchedGlassCard>
         <h1 className={styles.title}>
           Nand<em className="accent">i</em>ni Das

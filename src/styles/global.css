@@ -28,7 +28,8 @@ body {
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 450;
+  font-weight: 400;
+  letter-spacing: -0.01em;
   line-height: 1.05;
   margin: 0;
 }

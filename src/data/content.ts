@@ -36,7 +36,7 @@ export const contact = {
   blurb: "Have a project, a workflow to automate, or just want to say hi? My inbox is open.", // TODO: edit
   socials: [
     { label: "GitHub", href: "https://github.com/Nandini140906" }, // TODO: confirm
-    { label: "LinkedIn", href: "#" }, // TODO: add your LinkedIn URL
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/nandini-das-808144338/" },
   ],
 };
 

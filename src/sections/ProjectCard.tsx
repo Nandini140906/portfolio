@@ -1,16 +1,18 @@
-import { useRef, type SyntheticEvent } from "react";
+import { useRef, useState, type SyntheticEvent } from "react";
+import { ProjectGallery } from "./ProjectGallery";
 import { useHoverTilt } from "../animations/useHoverTilt";
 import { PLACEHOLDER_IMAGE, type Project } from "../data/projects";
 import styles from "../styles/Projects.module.css";
 
-/** Missing screenshot → neutral placeholder (instead of a broken image). */
-const onImgError = (e: SyntheticEvent<HTMLImageElement>) => {
-  const img = e.currentTarget;
-  if (!img.src.endsWith(PLACEHOLDER_IMAGE)) img.src = PLACEHOLDER_IMAGE;
-};
-
 export function ProjectCard({ project }: { project: Project }) {
-  const { title, blurb, stack, image, liveUrl, repoUrl, note, featured } = project;
+  const { title, blurb, stack, image, liveUrl, repoUrl, note, featured, fallbackImage, gallery } = project;
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  // Broken / unavailable screenshot → project fallback, then the neutral placeholder.
+  const onImgError = (e: SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    const next = fallbackImage && !img.src.endsWith(fallbackImage) ? fallbackImage : PLACEHOLDER_IMAGE;
+    if (!img.src.endsWith(next)) img.src = next;
+  };
   const ref = useRef<HTMLElement>(null);
   useHoverTilt(ref);
   const hasLive = !!liveUrl && liveUrl !== "#";
@@ -18,6 +20,11 @@ export function ProjectCard({ project }: { project: Project }) {
     <article ref={ref} className={`${styles.card} ${featured ? styles.featured : ""}`}>
       <div className={styles.media}>
         <img src={image} alt={`Screenshot of ${title}`} loading="lazy" onError={onImgError} />
+        {gallery?.length ? (
+          <button type="button" className={styles.mediaBtn} onClick={() => setGalleryOpen(true)} aria-label={`How ${title} works`}>
+            <span>How it works →</span>
+          </button>
+        ) : null}
         {featured && <span className={styles.badge}>Featured</span>}
       </div>
       <div className={styles.info}>
@@ -36,6 +43,11 @@ export function ProjectCard({ project }: { project: Project }) {
           ) : (
             <span className={`${styles.link} ${styles.disabled}`}>{note ?? "Coming soon"}</span>
           )}
+          {gallery?.length ? (
+            <button type="button" className={`${styles.link} ${styles.linkBtn}`} onClick={() => setGalleryOpen(true)} data-magnetic>
+              How it works <span aria-hidden="true">→</span>
+            </button>
+          ) : null}
           {repoUrl && (
             <a href={repoUrl} target="_blank" rel="noreferrer" className={styles.link} data-magnetic>
               Code <span aria-hidden="true">↗</span>
@@ -43,6 +55,7 @@ export function ProjectCard({ project }: { project: Project }) {
           )}
         </div>
       </div>
+      <ProjectGallery project={project} open={galleryOpen} onClose={() => setGalleryOpen(false)} />
     </article>
   );
 }

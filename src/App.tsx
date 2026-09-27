@@ -4,7 +4,7 @@ import { BackgroundCanvas } from "./three/BackgroundCanvas";
 import { NotchedGlassCard } from "./sections/NotchedGlassCard";
 import { site } from "./data/content";
 import { shouldPlayIntro } from "./intro/introGate";
-import { useIntroCovering } from "./intro/introStore";
+import { setIntroCovering, useIntroCovering } from "./intro/introStore";
 import styles from "./styles/App.module.css";
 
 // Intro code is split into its own chunk so it never delays the site's first paint.
@@ -13,7 +13,7 @@ const HeroIntro = lazy(() => import("./intro/HeroIntro"));
 // Phase 1: background + hero glass card, plus temporary scroll-test blocks.
 // Real sections replace the placeholder blocks in Phase 2.
 export default function App() {
-  // Decided once on mount: first visit this session, or ?intro=1; never under reduced motion.
+  // Decided once on mount: every load, unless ?intro=0 or reduced motion.
   const [introActive, setIntroActive] = useState(shouldPlayIntro);
   // Skip compositing the (expensive, invisible) page while the intro covers it.
   const introCovering = useIntroCovering();
@@ -24,7 +24,12 @@ export default function App() {
       {introActive && (
         // Fallback covers the page for the split second the intro chunk takes to load.
         <Suspense fallback={<div className={styles.introCover} />}>
-          <HeroIntro onDone={() => setIntroActive(false)} />
+          <HeroIntro
+            onDone={() => {
+              setIntroCovering(false); // safety: never leave the page hidden
+              setIntroActive(false);
+            }}
+          />
         </Suspense>
       )}
       <BackgroundCanvas />

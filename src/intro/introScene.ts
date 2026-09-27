@@ -10,7 +10,8 @@ export interface IntroBeats {
   streams: number; // 3. many weaving streams arc out and converge
   burst: number; // 4. everything resolves into a dense 3D plexus
   zoom: number; // camera push-in (1 = none)
-  scatter: number; // 5. handoff: network flies outward past the camera
+  join: number; // 5. handoff: the network collapses onto the hero card's outline
+  fade: number; // overlay fade (dust + nodes dim)
 }
 
 interface NetNode {
@@ -45,7 +46,7 @@ interface Speck {
 const BUD_COUNT = 7;
 
 export class IntroScene {
-  readonly beats: IntroBeats = { streak: 0, bud: 0, streams: 0, burst: 0, zoom: 1, scatter: 0 };
+  readonly beats: IntroBeats = { streak: 0, bud: 0, streams: 0, burst: 0, zoom: 1, join: 0, fade: 0 };
 
   private readonly plexus = new Plexus();
   private readonly seed = new Filament();
@@ -55,7 +56,27 @@ export class IntroScene {
   private w = 1;
   private h = 1;
 
-  constructor(private readonly mobile: boolean) {}
+  /**
+   * @param getTarget where the hero card sits on screen (CSS px); the network
+   *   joins onto this outline at the end. Null → a centred default box.
+   */
+  constructor(
+    private readonly mobile: boolean,
+    private readonly getTarget: () => DOMRect | null = () => null,
+  ) {}
+
+  /** Point at t ∈ [0,1) along a rectangle's perimeter (clockwise from top-left). */
+  private static perimeter(r: { x: number; y: number; w: number; h: number }, t: number): [number, number] {
+    const P = 2 * (r.w + r.h);
+    let d = (((t % 1) + 1) % 1) * P;
+    if (d < r.w) return [r.x + d, r.y];
+    d -= r.w;
+    if (d < r.h) return [r.x + r.w, r.y + d];
+    d -= r.h;
+    if (d < r.w) return [r.x + r.w - d, r.y + r.h];
+    d -= r.w;
+    return [r.x, r.y + r.h - d];
+  }
 
   /** (Re)build everything for a viewport size in CSS px. */
   resize(w: number, h: number): void {
@@ -132,7 +153,13 @@ export class IntroScene {
     const { w, h, beats: B } = this;
     const cx = w / 2;
     const cy = h / 2;
-    const fadeOut = 1 - B.scatter;
+    const fadeOut = 1 - B.fade;
+    const tr = this.getTarget();
+    const box = tr
+      ? { x: tr.left, y: tr.top, w: tr.width, h: tr.height }
+      : { x: w * 0.2, y: h * 0.38, w: w * 0.6, h: h * 0.24 };
+    // Smoothstep'd join so nodes ease in and settle onto the outline.
+    const J = B.join * B.join * (3 - 2 * B.join);
 
     ctx.globalCompositeOperation = "source-over";
     ctx.fillStyle = "#07070c";
@@ -146,8 +173,9 @@ export class IntroScene {
       drawGlow(ctx, x, y, d.r * 3, d.a * tw * fadeOut);
     }
 
-    // Camera push-in, plus a fly-through during the scatter.
-    const zoom = B.zoom * (1 + B.scatter * 0.8);
+    // Camera push-in; eases back to 1× during the join so the outline lands
+    // exactly where the real card is.
+    const zoom = 1 + (B.zoom - 1) * (1 - J);
     ctx.save();
     ctx.translate(cx, cy);
     ctx.scale(zoom, zoom);
@@ -188,12 +216,16 @@ export class IntroScene {
       const persp = F / (F + z3);
       const joined = B.burst > nn.joinAt;
 
-      if (joined) {
+      if (joined || J > 0) {
         // 4. In the network: projected 3D position; nearer = bigger.
-        n.tx = cx + x3 * persp;
-        n.ty = cy - h * 0.05 + nn.Y * persp; // sits a touch high, clear of the text
-        n.size = persp;
-        n.targetAlpha = Math.min(1, 0.35 + 0.65 * persp) * fadeOut;
+        const nx = cx + x3 * persp;
+        const ny = cy - h * 0.05 + nn.Y * persp; // sits a touch high, clear of the text
+        // 5. Join: glide onto evenly spaced points of the card's outline.
+        const [ox, oy] = IntroScene.perimeter(box, i / this.net.length + 0.08);
+        n.tx = nx + (ox - nx) * J;
+        n.ty = ny + (oy - ny) * J;
+        n.size = persp + (1 - persp) * J;
+        n.targetAlpha = Math.min(1, 0.35 + 0.65 * persp + J) * fadeOut;
       } else if (isBud && B.bud > 0) {
         // 2. Bud: fan out around the landing point.
         const a = (i / BUD_COUNT) * Math.PI * 2 + 0.4;
@@ -225,11 +257,16 @@ export class IntroScene {
     this.plexus.update(dt, now);
     // Link reach grows with the story: short in the bud, full in the network.
     const L = plexusConfig.linkDist * (this.mobile ? 0.8 : 1);
-    const linkDist = B.burst > 0 ? L * (0.6 + 0.2 * B.burst) : L * 0.7 * Math.max(B.bud, B.streams > 0 ? 1 : 0);
+    let linkDist = B.burst > 0 ? L * (0.6 + 0.2 * B.burst) : L * 0.7 * Math.max(B.bud, B.streams > 0 ? 1 : 0);
+    // While joining, links shrink to neighbours only → a glowing traced outline.
+    if (J > 0) {
+      const spacing = (2 * (box.w + box.h)) / this.net.length;
+      linkDist = linkDist + (spacing * 2.6 - linkDist) * J;
+    }
     drawPlexus(ctx, this.plexus, linkDist, 1, fadeOut);
 
     // Landed seed node — the brightest point until the network takes over.
-    if (B.streak >= 1) drawGlow(ctx, cx, cy, plexusConfig.bloomRadius * 2.2, (1 - B.burst * 0.6) * fadeOut);
+    if (B.streak >= 1) drawGlow(ctx, cx, cy, plexusConfig.bloomRadius * 2.2, (1 - B.burst * 0.6) * (1 - J) * fadeOut);
 
     ctx.restore();
   }

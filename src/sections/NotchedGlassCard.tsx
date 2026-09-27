@@ -1,4 +1,5 @@
 import { useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import gsap from "gsap";
 import { notchedPath } from "./notchedPath";
 import { LiquidLayer } from "./liquid/LiquidLayer";
 import { useCardTilt } from "./useCardTilt";
@@ -41,17 +42,50 @@ export function NotchedGlassCard({ children }: { children: ReactNode }) {
     return () => ro.disconnect();
   }, []);
 
+  // Assembly: once the intro hands off (or on load when there's no intro), the card
+  // rises in from depth, its glowing rim traces itself around the outline the
+  // intro's network just joined onto, and the halo blooms in.
+  const floatRef = useRef<HTMLDivElement>(null);
+  const assembled = useRef(false);
+  useLayoutEffect(() => {
+    if (assembled.current || introCovering || !size.w) return;
+    assembled.current = true;
+    if (reducedMotion) return;
+    const root = floatRef.current!;
+    const tl = gsap.timeline();
+    tl.from(root, {
+      autoAlpha: 0,
+      scale: 0.86,
+      y: 28,
+      duration: 1.1,
+      ease: "power3.out",
+      // Opacity/transform on this ancestor would disable the glass's backdrop blur,
+      // so drop them the moment the entrance finishes.
+      clearProps: "opacity,visibility,transform",
+    })
+      .fromTo(
+        root.querySelectorAll("[data-draw]"),
+        { strokeDasharray: 1, strokeDashoffset: 1 },
+        { strokeDashoffset: 0, duration: 1.3, ease: "power2.inOut", clearProps: "strokeDasharray,strokeDashoffset" },
+        0.05,
+      )
+      .from(root.querySelectorAll("[data-bloom]"), { opacity: 0, duration: 1, ease: "power1.out" }, 0.45);
+    return () => {
+      tl.kill();
+    };
+  }, [introCovering, reducedMotion, size.w]);
+
   const outer = size.w ? notchedPath(size.w, size.h, 1) : "";
   const inner = size.w ? notchedPath(size.w, size.h, 6) : "";
 
   return (
-    <div className={styles.float}>
+    <div ref={floatRef} className={styles.float}>
       {/* Soft ground shadow; scales opposite to the float so the card reads as hovering. */}
       <div ref={shadowRef} className={styles.shadow} aria-hidden="true" />
-    <div ref={ref} className={styles.card}>
+    <div ref={ref} className={styles.card} data-hero-card>
       {/* Soft blurred halo spilling out past the edges. */}
       {outer && (
-        <svg className={styles.halo} width={size.w} height={size.h} aria-hidden="true">
+        <svg className={styles.halo} width={size.w} height={size.h} aria-hidden="true" data-bloom>
           <defs>
             <filter id={`halo${id}`} x="-30%" y="-30%" width="160%" height="160%">
               <feGaussianBlur stdDeviation="9" />
@@ -141,9 +175,17 @@ export function NotchedGlassCard({ children }: { children: ReactNode }) {
             filter={`url(#soft${id})`}
             clipPath={`url(#clip${id})`}
           />
-          <path d={outer} fill="none" stroke={`url(#rim${id})`} strokeWidth="1.4" filter={`url(#glow${id})`} />
+          <path
+            d={outer}
+            fill="none"
+            stroke={`url(#rim${id})`}
+            strokeWidth="1.4"
+            filter={`url(#glow${id})`}
+            pathLength={1}
+            data-draw
+          />
           {/* Inner bevel line — the thickness of the acrylic slab. */}
-          <path d={inner} fill="none" stroke="rgba(255, 228, 218, 0.22)" strokeWidth="1" />
+          <path d={inner} fill="none" stroke="rgba(255, 228, 218, 0.22)" strokeWidth="1" pathLength={1} data-draw />
         </svg>
       )}
 

@@ -26,7 +26,7 @@ export function GalaxyScene({ isMobile, animate }: GalaxySceneProps) {
     "Galaxy",
     {
       count: { value: 35000, min: 10000, max: 200000, step: 5000 },
-      radius: { value: 3.1, min: 0.5, max: 6, step: 0.05 },
+      radius: { value: 4.2, min: 0.5, max: 6, step: 0.05 },
       winding: { value: 4.6, min: 0.5, max: 8, step: 0.05 },
       armWidth: { value: 0.045, min: 0.005, max: 0.2, step: 0.001 },
       dust: { value: 0.12, min: 0, max: 1, step: 0.01 },

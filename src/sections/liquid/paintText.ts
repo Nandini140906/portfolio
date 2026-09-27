@@ -18,6 +18,9 @@ export function paintText(
   const prevTransform = card.style.transform;
   card.style.transform = "none";
   const origin = card.getBoundingClientRect();
+  // Ancestors may still be scaled (e.g. the card's entrance animation): convert
+  // screen px back to the card's own layout px.
+  const k = card.offsetWidth ? origin.width / card.offsetWidth : 1;
 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -54,8 +57,9 @@ export function paintText(
       const ascent = metrics.fontBoundingBoxAscent ?? metrics.actualBoundingBoxAscent;
       const descent = metrics.fontBoundingBoxDescent ?? metrics.actualBoundingBoxDescent;
       // Inline content-area height = ascent + descent, centred in the rect.
-      const baseline = r.top - origin.top + (r.height - (ascent + descent)) / 2 + ascent;
-      ctx.fillText(m[0], r.left - origin.left, baseline);
+      const top = (r.top - origin.top) / k;
+      const baseline = top + (r.height / k - (ascent + descent)) / 2 + ascent;
+      ctx.fillText(m[0], (r.left - origin.left) / k, baseline);
     }
   }
   range.detach();

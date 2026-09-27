@@ -27,9 +27,27 @@ export const about = {
   ],
 };
 
-export const skills: { group: string; items: string[] }[] = [
-  { group: "Automation", items: ["n8n", "Python", "FastAPI", "APIs", "Browser automation"] },
-  { group: "Websites", items: ["Figma", "Three.js", "AI tools"] },
+export const skills: { group: string; blurb: string; items: { name: string; note: string }[] }[] = [
+  {
+    group: "Automation",
+    blurb: "Systems that do repetitive work for you.",
+    items: [
+      { name: "n8n", note: "Connects your apps and runs workflows automatically" },
+      { name: "Python", note: "Custom scripts for data, files and logic" },
+      { name: "FastAPI", note: "Fast, custom back-ends and endpoints" },
+      { name: "APIs", note: "Connecting any tool or service together" },
+      { name: "Browser automation", note: "Bots that click, fill in and collect from websites" },
+    ],
+  },
+  {
+    group: "Websites",
+    blurb: "Sites that look great and turn visitors into enquiries.",
+    items: [
+      { name: "Figma", note: "Design and clickable prototypes" },
+      { name: "Three.js", note: "3D and interactive experiences on the web" },
+      { name: "AI tools", note: "AI-powered features, content and speed" },
+    ],
+  },
 ];
 
 export const contact = {

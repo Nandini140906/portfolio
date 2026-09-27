@@ -1,52 +1,73 @@
 .grid {
   display: grid;
-  gap: clamp(14px, 2vw, 22px);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: clamp(16px, 2.4vw, 28px);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  align-items: start;
 }
 
 .group {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
+  padding: clamp(24px, 3vw, 36px);
 }
 
-.groupTitle {
+.groupHead {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--white);
+  align-items: flex-start;
+  gap: 16px;
 }
 
 .num {
-  color: var(--dimmer);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 2.6rem;
+  line-height: 0.9;
+  color: var(--gold);
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.groupTitle {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+  letter-spacing: -0.03em;
+}
+
+.groupBlurb {
+  margin: 4px 0 0;
+  color: var(--dim);
+}
+
+/* One skill per row, stacked vertically. */
+.list {
   margin: 0;
   padding: 0;
   list-style: none;
+  border-top: 1px solid var(--line);
 }
 
-.chips li {
-  padding: 6px 12px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.02);
-  font-size: 0.92rem;
-  color: var(--dim);
-  transition: border-color 0.2s ease, color 0.2s ease;
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--line);
+  transition: background-color 0.25s ease, padding-left 0.25s ease;
 }
 
-.chips li:hover {
-  border-color: rgba(255, 201, 138, 0.35);
+.item:hover {
+  padding-left: 12px;
+  background: linear-gradient(90deg, rgba(255, 201, 138, 0.08), transparent 70%);
+}
+
+.name {
+  font-size: 1.15rem;
+  font-weight: 600;
   color: var(--white);
+  letter-spacing: -0.01em;
+}
+
+.note {
+  font-size: 0.95rem;
+  color: var(--dim);
 }

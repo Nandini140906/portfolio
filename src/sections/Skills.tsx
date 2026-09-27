@@ -10,13 +10,20 @@ export function Skills() {
         <div className={styles.grid} data-reveal-stagger>
           {skills.map((g, gi) => (
             <div key={g.group} className={`panel ${styles.group}`}>
-              <h3 className={styles.groupTitle}>
+              <header className={styles.groupHead}>
                 <span className={styles.num}>{String(gi + 1).padStart(2, "0")}</span>
-                {g.group}
-              </h3>
-              <ul className={styles.chips} data-reveal-chips>
+                <div>
+                  <h3 className={styles.groupTitle}>{g.group}</h3>
+                  <p className={styles.groupBlurb}>{g.blurb}</p>
+                </div>
+              </header>
+              {/* Vertical list: one skill per row with a plain-words note. */}
+              <ul className={styles.list} data-reveal-chips>
                 {g.items.map((s) => (
-                  <li key={s}>{s}</li>
+                  <li key={s.name} className={styles.item}>
+                    <span className={styles.name}>{s.name}</span>
+                    <span className={styles.note}>{s.note}</span>
+                  </li>
                 ))}
               </ul>
             </div>

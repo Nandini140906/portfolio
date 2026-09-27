@@ -1,12 +1,13 @@
-import { useRef, useState, type SyntheticEvent } from "react";
-import { ProjectGallery } from "./ProjectGallery";
+import { useCallback, useRef, useState, type SyntheticEvent } from "react";
+import { HowItWorks } from "./HowItWorks";
 import { useHoverTilt } from "../animations/useHoverTilt";
 import { PLACEHOLDER_IMAGE, type Project } from "../data/projects";
 import styles from "../styles/Projects.module.css";
 
 export function ProjectCard({ project }: { project: Project }) {
-  const { title, blurb, stack, image, liveUrl, repoUrl, note, featured, fallbackImage, gallery } = project;
+  const { title, blurb, stack, image, liveUrl, repoUrl, note, featured, fallbackImage, howItWorks } = project;
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const closeGallery = useCallback(() => setGalleryOpen(false), []);
   // Broken / unavailable screenshot → project fallback, then the neutral placeholder.
   const onImgError = (e: SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget;
@@ -20,10 +21,15 @@ export function ProjectCard({ project }: { project: Project }) {
     <article ref={ref} className={`${styles.card} ${featured ? styles.featured : ""}`}>
       <div className={styles.media}>
         <img src={image} alt={`Screenshot of ${title}`} loading="lazy" onError={onImgError} />
-        {gallery?.length ? (
+        {howItWorks ? (
           <button type="button" className={styles.mediaBtn} onClick={() => setGalleryOpen(true)} aria-label={`How ${title} works`}>
             <span>How it works →</span>
           </button>
+        ) : hasLive ? (
+          // Live site: the whole screenshot links to the website.
+          <a href={liveUrl} target="_blank" rel="noreferrer" className={styles.mediaBtn} aria-label={`Visit ${title} (opens in a new tab)`}>
+            <span>Visit website ↗</span>
+          </a>
         ) : null}
         {featured && <span className={styles.badge}>Featured</span>}
       </div>
@@ -43,7 +49,7 @@ export function ProjectCard({ project }: { project: Project }) {
           ) : (
             <span className={`${styles.link} ${styles.disabled}`}>{note ?? "Coming soon"}</span>
           )}
-          {gallery?.length ? (
+          {howItWorks ? (
             <button type="button" className={`${styles.link} ${styles.linkBtn}`} onClick={() => setGalleryOpen(true)} data-magnetic>
               How it works <span aria-hidden="true">→</span>
             </button>
@@ -55,7 +61,7 @@ export function ProjectCard({ project }: { project: Project }) {
           )}
         </div>
       </div>
-      <ProjectGallery project={project} open={galleryOpen} onClose={() => setGalleryOpen(false)} />
+      <HowItWorks project={project} open={galleryOpen} onClose={closeGallery} />
     </article>
   );
 }

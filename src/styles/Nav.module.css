@@ -101,9 +101,48 @@
   pointer-events: none;
 }
 
+/* Highlighted LinkedIn button. */
+.linkedin {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 201, 138, 0.55);
+  background: linear-gradient(135deg, rgba(255, 201, 138, 0.16), rgba(147, 184, 255, 0.08));
+  box-shadow: 0 0 18px rgba(255, 201, 138, 0.22);
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 600;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+}
+
+.linkedin:hover,
+.linkedin:focus-visible {
+  border-color: var(--gold);
+  box-shadow: 0 0 28px rgba(255, 201, 138, 0.45);
+}
+
+.liBadge {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #0a66c2;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* Phones: just the "in" badge so the nav fits on one line. */
 @media (max-width: 640px) {
-  .hideSm {
+  .liText {
     display: none;
+  }
+  .linkedin {
+    padding: 5px;
   }
 }
 

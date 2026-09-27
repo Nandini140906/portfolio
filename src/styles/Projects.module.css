@@ -150,7 +150,7 @@
   padding: 14px;
   border: 0;
   background: linear-gradient(to top, rgba(7, 7, 12, 0.55), transparent 45%);
-  cursor: zoom-in;
+  cursor: pointer;
   opacity: 0;
   transition: opacity 0.25s ease;
 }

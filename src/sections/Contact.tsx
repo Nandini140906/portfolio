@@ -19,7 +19,13 @@ export function Contact() {
             <ul className={styles.socials}>
               {contact.socials.map((s) => (
                 <li key={s.label}>
-                  <a href={s.href} target="_blank" rel="noreferrer" className={styles.social}>
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`${styles.social} ${s.label === "LinkedIn" ? styles.socialHi : ""}`}
+                    data-magnetic
+                  >
                     {s.label} <span aria-hidden="true">↗</span>
                   </a>
                 </li>

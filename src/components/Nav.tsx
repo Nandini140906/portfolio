@@ -105,9 +105,17 @@ export function Nav() {
             </li>
           ))}
           {linkedin && (
-            <li className={styles.hideSm}>
-              <a href={linkedin} target="_blank" rel="noreferrer" className={styles.link}>
-                LinkedIn <span aria-hidden="true">↗</span>
+            <li>
+              <a
+                href={linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.linkedin}
+                aria-label="LinkedIn (opens in a new tab)"
+                data-magnetic
+              >
+                <span className={styles.liBadge} aria-hidden="true">in</span>
+                <span className={styles.liText}>LinkedIn</span>
               </a>
             </li>
           )}

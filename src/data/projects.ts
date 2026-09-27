@@ -25,18 +25,20 @@ export const projects: Project[] = [
   },
   {
     slug: "lead-generation",
-    title: "Lead generation automation",
-    blurb: "An automated workflow that finds and collects leads, so outreach starts with a ready-to-use list.", // TODO: refine
-    stack: ["n8n", "Automation"], // TODO: confirm tools (APIs, sheets/CRM, LLM…)
-    image: "/projects/lead-generation.png", // TODO: swap for a real workflow screenshot
+    title: "Real-estate lead automation",
+    blurb:
+      "A property enquiry form that instantly logs each lead to Google Sheets, emails the agent the details with a one-tap WhatsApp link, and auto-replies to the buyer promising a call within 30 minutes.",
+    stack: ["n8n", "Webhooks", "Google Sheets", "Gmail"],
+    image: "/projects/lead-generation.png",
     note: "Private workflow",
   },
   {
     slug: "meeting-transcript",
-    title: "Meeting transcript automation",
-    blurb: "Turns meeting recordings into clean, shareable transcripts — no manual note-taking.", // TODO: refine
-    stack: ["n8n", "Speech-to-text"], // TODO: confirm tools
-    image: "/projects/meeting-transcript.png", // TODO: swap for a real workflow screenshot
+    title: "Meeting notes automation",
+    blurb:
+      "Upload a meeting's notes and attendee list — an LLM (Groq) summarises them, the summary is saved to a Notion database, and every attendee gets it by email automatically.",
+    stack: ["n8n", "Groq LLM", "Notion API", "Gmail"],
+    image: "/projects/meeting-transcript.png",
     note: "Private workflow",
   },
 ];

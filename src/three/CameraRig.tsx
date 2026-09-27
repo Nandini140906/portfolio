@@ -39,7 +39,7 @@ export function CameraRig({
     const py = animate ? pointer.y : 0;
     const p = animate ? scroll.progress : 0;
 
-    target.set(base[0] + px * parallax, base[1] + py * parallax * 0.6 - p * 0.4, base[2] - p * scrollDolly);
+    target.set(base[0] + px * parallax, base[1] + py * parallax * 0.6 - p * 0.4, base[2] - p * scrollDolly - (animate ? scroll.nudge : 0));
 
     if (!animate) {
       camera.position.copy(target);

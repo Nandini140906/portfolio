@@ -1,4 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import type * as THREE from "three";
+import { reveal } from "./motionStore";
 import { useControls } from "leva";
 import { CameraRig } from "./CameraRig";
 import { Backdrop } from "./Backdrop";
@@ -53,6 +56,17 @@ export function GalaxyScene({ isMobile, animate }: GalaxySceneProps) {
     { collapsed: true },
   );
 
+  // Converge: on the Hero reveal the disc eases in from slightly expanded and
+  // over-rotated to its formed shape (reveal.converge 0 → 1, tweened by GSAP).
+  const formRef = useRef<THREE.Group>(null);
+  useFrame(() => {
+    const g = formRef.current;
+    if (!g) return;
+    const c = reveal.converge;
+    g.scale.setScalar(1 + (1 - c) * 0.35);
+    g.rotation.z = (1 - c) * -0.5;
+  });
+
   const count = isMobile ? Math.round(v.count * 0.4) : v.count;
   const buffers = useMemo(
     () =>
@@ -87,7 +101,7 @@ export function GalaxyScene({ isMobile, animate }: GalaxySceneProps) {
       />
       <Backdrop position={[0, 0, -110]} size={500} />
       <SpiralBackdrop isMobile={isMobile} animate={animate} />
-      <group position={[0, v.offsetY, 0]}>
+      <group ref={formRef} position={[0, v.offsetY, 0]}>
         {/*
           Roll (z) lays the ellipse diagonally on screen; inclination (x) tips the XZ
           disc toward camera — its on-screen minor/major ratio is ≈ sin(inclination).

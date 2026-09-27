@@ -8,7 +8,7 @@ export function Projects() {
     <section id="work" className="section" aria-labelledby="work-title">
       <div className="container">
         <SectionHeading id="work-title" index="02" label="Selected work" title="Things I've *built*" />
-        <div className={styles.grid}>
+        <div className={styles.grid} data-reveal-stagger>
           {projects.map((p) => (
             <ProjectCard key={p.slug} project={p} />
           ))}

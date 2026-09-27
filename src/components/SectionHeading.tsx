@@ -12,7 +12,7 @@ interface SectionHeadingProps {
 
 export function SectionHeading({ index, label, title, id }: SectionHeadingProps) {
   return (
-    <header className={styles.head}>
+    <header className={styles.head} data-reveal-head>
       <p className={styles.label}>
         <span className={styles.index}>{`// ${index}`}</span> — {label}
       </p>

@@ -4,8 +4,16 @@
  *  canvas wrapper is pointer-events:none and never receives events itself. */
 export const pointer = { x: 0, y: 0 };
 
-/** Whole-page scroll progress 0 → 1. */
-export const scroll = { progress: 0 };
+/**
+ * Whole-page scroll progress 0 → 1, plus values written by the GSAP
+ * ScrollTriggers in src/animations (scrubbed, so always smooth):
+ *  - boost: extra galaxy spin while scrolling (from scroll velocity, eases to 0)
+ *  - nudge: extra camera dolly (world units) that pulses at section boundaries
+ */
+export const scroll = { progress: 0, boost: 0, nudge: 0 };
+
+/** 0 = galaxy scattered/expanded, 1 = formed. Tweened in on the Hero reveal. */
+export const reveal = { converge: 1 };
 
 let attached = false;
 
@@ -29,4 +37,9 @@ export function attachMotionListeners(): void {
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", onScroll, { passive: true });
   onScroll();
+}
+
+// Dev-only handle for inspecting live motion values from the console / tests.
+if (import.meta.env.DEV && typeof window !== "undefined") {
+  (window as unknown as { __motion?: object }).__motion = { pointer, scroll, reveal };
 }

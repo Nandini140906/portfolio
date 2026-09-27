@@ -88,7 +88,8 @@ export function GalaxyParticles({
   useFrame((state, delta) => {
     if (!points.current || !animate) return;
     material.uniforms.uTime.value = state.clock.elapsedTime;
-    spin.current += delta * rotationSpeed;
+    // Scrolling briefly speeds up the spin (scroll.boost is scrubbed by GSAP).
+    spin.current += delta * rotationSpeed * (1 + scroll.boost);
     points.current.rotation.y = spin.current + scroll.progress * scrollSpin;
   });
 

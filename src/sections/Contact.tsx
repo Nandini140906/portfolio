@@ -6,7 +6,7 @@ export function Contact() {
   return (
     <section id="contact" className={`section ${styles.contact}`} aria-labelledby="contact-title">
       <div className="container">
-        <div className={`panel ${styles.box}`}>
+        <div className={`panel ${styles.box}`} data-reveal>
           <SectionHeading id="contact-title" index="04" label="Contact" title={contact.heading} />
           <p className={styles.blurb}>{contact.blurb}</p>
           <a href={`mailto:${site.email}`} className={styles.email}>

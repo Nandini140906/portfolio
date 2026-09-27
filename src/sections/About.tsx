@@ -10,11 +10,11 @@ export function About() {
           <SectionHeading id="about-title" index="01" label="About" title={about.heading} />
           <div className={`panel ${styles.body}`}>
             {about.paragraphs.map((p, i) => (
-              <p key={i} className={styles.para}>
+              <p key={i} className={styles.para} data-reveal-lines>
                 {p}
               </p>
             ))}
-            <dl className={styles.facts}>
+            <dl className={styles.facts} data-reveal-stagger>
               {about.facts.map((f) => (
                 <div key={f.label} className={styles.fact}>
                   <dt>{f.label}</dt>

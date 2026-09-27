@@ -110,3 +110,8 @@ html {
 .skip-link:focus {
   transform: none;
 }
+
+/* Words wrapped by the line-reveal animation (src/animations/splitWords.ts). */
+.split-word {
+  display: inline-block;
+}

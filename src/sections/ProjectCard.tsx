@@ -1,4 +1,5 @@
-import type { SyntheticEvent } from "react";
+import { useRef, type SyntheticEvent } from "react";
+import { useHoverTilt } from "../animations/useHoverTilt";
 import { PLACEHOLDER_IMAGE, type Project } from "../data/projects";
 import styles from "../styles/Projects.module.css";
 
@@ -10,9 +11,11 @@ const onImgError = (e: SyntheticEvent<HTMLImageElement>) => {
 
 export function ProjectCard({ project }: { project: Project }) {
   const { title, blurb, stack, image, liveUrl, repoUrl, note, featured } = project;
+  const ref = useRef<HTMLElement>(null);
+  useHoverTilt(ref);
   const hasLive = !!liveUrl && liveUrl !== "#";
   return (
-    <article className={`${styles.card} ${featured ? styles.featured : ""}`}>
+    <article ref={ref} className={`${styles.card} ${featured ? styles.featured : ""}`}>
       <div className={styles.media}>
         <img src={image} alt={`Screenshot of ${title}`} loading="lazy" onError={onImgError} />
         {featured && <span className={styles.badge}>Featured</span>}

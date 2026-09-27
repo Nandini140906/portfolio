@@ -7,8 +7,12 @@ export function splitWordsByLine(el: HTMLElement): HTMLElement[][] {
   if (!el.dataset.split) {
     const text = el.textContent ?? "";
     el.textContent = "";
-    // Keep the real text available to assistive tech; hide the split copy.
-    el.setAttribute("aria-label", text.trim());
+    // Screen readers get one intact copy (visually hidden); the animated
+    // per-word spans are hidden from them. (aria-label isn't allowed on <p>.)
+    const sr = document.createElement("span");
+    sr.className = "sr-only";
+    sr.textContent = text;
+    el.appendChild(sr);
     text.split(/(\s+)/).forEach((part) => {
       if (!part) return;
       if (/^\s+$/.test(part)) {

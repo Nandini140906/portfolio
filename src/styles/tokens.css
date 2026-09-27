@@ -7,7 +7,7 @@
   /* text */
   --white:     #f4f2ff;
   --dim:       #b9b6d6;
-  --dimmer:    #6f6c8f;
+  --dimmer:    #8b88aa;   /* lightened from #6f6c8f to pass WCAG AA on small text */
 
   /* galaxy / accent */
   --gold:      #ffc98a;   /* core + cursor */

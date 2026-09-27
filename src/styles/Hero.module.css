@@ -38,13 +38,13 @@
   font-size: 11px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--dimmer);
+  color: var(--dim);
   text-decoration: none;
 }
 
 .cue:hover,
 .cue:focus-visible {
-  color: var(--dim);
+  color: var(--white);
 }
 
 .cueLine {

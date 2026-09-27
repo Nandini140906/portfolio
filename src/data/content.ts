@@ -19,8 +19,9 @@ export const whatsappUrl = `https://wa.me/${whatsapp.number}?text=${encodeURICom
 export const about = {
   heading: "I build things that *work* for your business",
   paragraphs: [
-    "Your team shouldn't spend hours copying leads into spreadsheets, chasing follow-ups or writing up meeting notes. I build automations that do that work for you — instantly, accurately, around the clock — so you can focus on closing deals and serving clients.",
-    "I also design and build fast, modern websites that make a strong first impression and turn visitors into enquiries. From the first idea to launch, you get one person who understands both the design and the systems behind it — and who stays until it works exactly the way you need.",
+    "I build websites and automations for businesses that want to look professional and work more efficiently.",
+    "From modern, conversion-focused websites to automations that remove repetitive tasks, I turn ideas and business problems into practical digital solutions.",
+    "I’m easy to work with, open to feedback, and focused on delivering work that doesn’t just look good — it actually does its job.",
   ],
 };
 

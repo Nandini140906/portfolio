@@ -1,6 +1,5 @@
 import { Suspense, lazy, useState } from "react";
 import { Leva } from "leva";
-import { BackgroundCanvas } from "./three/BackgroundCanvas";
 import { Nav } from "./components/Nav";
 import { ConstellationCursor } from "./cursor/ConstellationCursor";
 import { Footer } from "./components/Footer";
@@ -17,6 +16,9 @@ import styles from "./styles/App.module.css";
 
 // Intro code is split into its own chunk so it never delays the site's first paint.
 const HeroIntro = lazy(() => import("./intro/HeroIntro"));
+// The 3D background (three.js + postprocessing) is the heaviest part of the site;
+// load it in parallel so text and layout paint without waiting for it.
+const BackgroundCanvas = lazy(() => import("./three/BackgroundCanvas").then((m) => ({ default: m.BackgroundCanvas })));
 
 export default function App() {
   // Decided once on mount: every load, unless ?intro=0 or reduced motion.
@@ -45,7 +47,9 @@ export default function App() {
           />
         </Suspense>
       )}
-      <BackgroundCanvas />
+      <Suspense fallback={null}>
+        <BackgroundCanvas />
+      </Suspense>
       <ConstellationCursor />
       <div style={hidden}>
         <Nav />

@@ -1,5 +1,5 @@
 import { useEffect, useRef, type CSSProperties, type RefObject } from "react";
-import { MAX_TRAIL, liquidFragmentShader, liquidVertexShader } from "./liquidShader";
+import { liquidFragmentShader, liquidVertexShader } from "./liquidShader";
 import { paintText } from "./paintText";
 
 export interface TiltState {
@@ -29,16 +29,11 @@ function compile(gl: WebGLRenderingContext, type: number, src: string) {
   return s;
 }
 
-const TRAIL_LIFE = 1.4; // s for a wake blob to fully settle
-const TRAIL_EVERY_PX = 9; // drop a new blob after the pointer travels this far
-const BLOB_AMP = 0.32; // wake height per blob
-const BLOB_RADIUS = 0.13; // card-heights
 
 /**
- * Liquid glass card layer: a small standalone WebGL canvas that draws the ambient
- * dissolved swirl and a copy of the card's text. Moving the cursor across the card
- * leaves a liquid wake that bends the letters and turns them iridescent chrome,
- * then they settle back — the "liquid metal type" effect.
+ * Glass card layer: a small standalone WebGL canvas that draws the ambient
+ * dissolved swirl and a copy of the card's text. Hovering places a smooth glass
+ * lens under the cursor that gently magnifies the letters beneath it.
  */
 export function LiquidLayer({ tilt, animate, textRoot, onTextReady, className, style }: LiquidLayerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -77,7 +72,6 @@ export function LiquidLayer({ tilt, animate, textRoot, onTextReady, className, s
       res: gl.getUniformLocation(program, "uRes"),
       mouse: gl.getUniformLocation(program, "uMouse"),
       hover: gl.getUniformLocation(program, "uHover"),
-      trail: gl.getUniformLocation(program, "uTrail"),
       tilt: gl.getUniformLocation(program, "uTilt"),
       text: gl.getUniformLocation(program, "uText"),
       hasText: gl.getUniformLocation(program, "uHasText"),
@@ -138,17 +132,8 @@ export function LiquidLayer({ tilt, animate, textRoot, onTextReady, className, s
     const mouse = { x: 0.5, y: 0.5 };
     let hoverTarget = 0;
     let hover = 0;
-    // Trail slots: x, y, bornAt, amp (bornAt < 0 = empty).
-    const trail = new Float32Array(MAX_TRAIL * 4).fill(-1);
-    const trailData = new Float32Array(MAX_TRAIL * 4);
-    let nextSlot = 0;
-    let lastPx = { x: -1e4, y: -1e4 };
     const clock = () => performance.now() / 1000;
 
-    const drop = (x: number, y: number, amp: number) => {
-      trail.set([x, y, clock(), amp], nextSlot * 4);
-      nextSlot = (nextSlot + 1) % MAX_TRAIL;
-    };
     const toUv = (e: PointerEvent) => {
       // Projected (tilted) box — close enough for a few degrees of tilt.
       const r = canvas.getBoundingClientRect();
@@ -159,30 +144,18 @@ export function LiquidLayer({ tilt, animate, textRoot, onTextReady, className, s
       const p = toUv(e);
       target.x = mouse.x = p.x;
       target.y = mouse.y = p.y;
-      lastPx = { x: e.clientX, y: e.clientY };
     };
     const onMove = (e: PointerEvent) => {
       const p = toUv(e);
       target.x = p.x;
       target.y = p.y;
-      const dist = Math.hypot(e.clientX - lastPx.x, e.clientY - lastPx.y);
-      if (dist > TRAIL_EVERY_PX) {
-        // Faster strokes make a stronger wake (capped).
-        drop(p.x, p.y, BLOB_AMP * Math.min(1.6, 0.6 + dist / 30));
-        lastPx = { x: e.clientX, y: e.clientY };
-      }
     };
     const onLeave = () => {
       hoverTarget = 0;
     };
-    const onDown = (e: PointerEvent) => {
-      const p = toUv(e);
-      drop(p.x, p.y, BLOB_AMP * 2.2); // click / tap = a splash
-    };
     host.addEventListener("pointerenter", onEnter);
     host.addEventListener("pointermove", onMove);
     host.addEventListener("pointerleave", onLeave);
-    host.addEventListener("pointerdown", onDown);
 
     let raf = 0;
     const start = clock();
@@ -191,29 +164,18 @@ export function LiquidLayer({ tilt, animate, textRoot, onTextReady, className, s
       const now = clock();
       const dt = Math.min(0.05, now - last);
       last = now;
-      hover += (hoverTarget - hover) * (1 - Math.exp(-6 * dt));
-      // The bulge lags the cursor a little, like a drop dragged through liquid.
-      const k = 1 - Math.exp(-10 * dt);
+      hover += (hoverTarget - hover) * (1 - Math.exp(-4 * dt));
+      // The lens glides after the cursor (soft lag) instead of snapping to it.
+      const k = 1 - Math.exp(-7 * dt);
       mouse.x += (target.x - mouse.x) * k;
       mouse.y += (target.y - mouse.y) * k;
 
-      for (let i = 0; i < MAX_TRAIL; i++) {
-        const born = trail[i * 4 + 2];
-        const age = born < 0 ? Infinity : now - born;
-        const life = age < TRAIL_LIFE ? 1 - age / TRAIL_LIFE : 0;
-        trailData[i * 4] = trail[i * 4];
-        trailData[i * 4 + 1] = trail[i * 4 + 1];
-        // Ease out (life²) so letters "heal" smoothly; blobs also spread as they fade.
-        trailData[i * 4 + 2] = life > 0 ? trail[i * 4 + 3] * life * life : 0;
-        trailData[i * 4 + 3] = BLOB_RADIUS * (1 + (1 - life) * 0.6);
-      }
 
       const s = tilt.current;
       gl.uniform1f(u.time, animate ? now - start : 6);
       gl.uniform2f(u.res, canvas.width, canvas.height);
       gl.uniform2f(u.mouse, mouse.x, mouse.y);
       gl.uniform1f(u.hover, hover);
-      gl.uniform4fv(u.trail, trailData);
       gl.uniform2f(u.tilt, s.rx, s.ry);
       gl.uniform1f(u.hasText, hasText ? 1 : 0);
       gl.clearColor(0, 0, 0, 0);
@@ -238,7 +200,6 @@ export function LiquidLayer({ tilt, animate, textRoot, onTextReady, className, s
       host.removeEventListener("pointerenter", onEnter);
       host.removeEventListener("pointermove", onMove);
       host.removeEventListener("pointerleave", onLeave);
-      host.removeEventListener("pointerdown", onDown);
       ro.disconnect();
       gl.deleteTexture(tex);
       gl.deleteBuffer(buf);

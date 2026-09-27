@@ -53,3 +53,60 @@ img {
 }
 
 /* NOTE: native cursor is hidden in Phase 4, only when the constellation cursor is active. */
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px; /* clear the fixed nav when jumping to anchors */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ---- shared layout ---- */
+.container {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.section {
+  position: relative;
+  padding-block: clamp(88px, 14vh, 160px);
+}
+
+/* Readable surface for text over the galaxy — soft glass, galaxy still shows. */
+.panel {
+  padding: clamp(22px, 3vw, 32px);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(10, 10, 18, 0.55);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  transform: translateY(-150%);
+}
+
+.skip-link:focus {
+  transform: none;
+}

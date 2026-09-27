@@ -1,0 +1,90 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: clamp(20px, 4vh, 40px);
+  padding: 96px 16px 120px;
+  text-align: center;
+}
+
+.micro {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--dim);
+  text-shadow: 0 0 12px rgba(7, 7, 12, 0.9), 0 0 4px rgba(7, 7, 12, 0.9);
+}
+
+.title {
+  font-size: clamp(2.7rem, 7.4vw, 5.6rem);
+  /* Keeps the name legible over the galaxy core glowing through the glass. */
+  text-shadow: 0 1px 2px rgba(7, 7, 12, 0.6), 0 2px 24px rgba(7, 7, 12, 0.55);
+}
+
+.tagline {
+  margin: 0.9rem 0 0;
+  font-size: clamp(1rem, 1.9vw, 1.35rem);
+  color: var(--dim);
+}
+
+/* Scroll cue: mono label + a line with a light pulse travelling down it. */
+.cue {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  text-decoration: none;
+}
+
+.cue:hover,
+.cue:focus-visible {
+  color: var(--dim);
+}
+
+.cueLine {
+  position: relative;
+  width: 1px;
+  height: 44px;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.cueLine::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 40%;
+  background: linear-gradient(to bottom, transparent, var(--gold));
+  animation: cuePulse 2.2s ease-in-out infinite;
+}
+
+@keyframes cuePulse {
+  from {
+    top: -40%;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cueLine::after {
+    animation: none;
+    top: 30%;
+  }
+}

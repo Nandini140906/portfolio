@@ -1,18 +1,6 @@
-import { forwardRef, type ReactNode } from "react";
+import { forwardRef } from "react";
+import { renderAccent } from "../components/Accent";
 import styles from "../styles/HeroIntro.module.css";
-
-/** "a *word* here" → ["a ", <em>word</em>, " here"] (gold italic accent). */
-function renderAccent(line: string): ReactNode[] {
-  return line.split(/\*(.+?)\*/g).map((part, i) =>
-    i % 2 === 1 ? (
-      <em key={i} className="accent">
-        {part}
-      </em>
-    ) : (
-      part
-    ),
-  );
-}
 
 /**
  * One intro line with the ghosted reflection underneath (a flipped, faded,

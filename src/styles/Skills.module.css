@@ -1,0 +1,51 @@
+.grid {
+  display: grid;
+  gap: clamp(14px, 2vw, 22px);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.groupTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+.num {
+  color: var(--gold);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.92rem;
+  color: var(--dim);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.chips li:hover {
+  border-color: rgba(255, 201, 138, 0.35);
+  color: var(--white);
+}

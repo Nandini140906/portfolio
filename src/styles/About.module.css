@@ -1,0 +1,51 @@
+.grid {
+  display: grid;
+  gap: 8px;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1.1fr;
+    gap: 64px;
+    align-items: start;
+  }
+}
+
+.body {
+  max-width: 60ch;
+}
+
+.para {
+  margin: 0 0 1.1em;
+  font-size: clamp(1.02rem, 1.4vw, 1.15rem);
+  line-height: 1.7;
+  color: var(--dim);
+}
+
+.facts {
+  display: grid;
+  gap: 12px;
+  margin: 28px 0 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.fact {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.fact dt {
+  color: var(--dimmer);
+}
+
+.fact dd {
+  margin: 0;
+  color: var(--white);
+  text-align: right;
+}
